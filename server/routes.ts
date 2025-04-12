@@ -1,5 +1,6 @@
 import express, { type Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
+import Stripe from "stripe";
 import { storage } from "./storage";
 import { 
   insertUserSchema, 
@@ -8,6 +9,14 @@ import {
   insertPurchaseSchema 
 } from "@shared/schema";
 import { z } from "zod";
+
+// Setup Stripe
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2023-10-16",
+});
 
 // Utility function to validate request against a schema
 const validateRequest = <T extends z.ZodTypeAny>(
@@ -284,6 +293,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.get('/purchases', isAuthenticated, async (req, res) => {
     const purchases = await storage.getPurchasesByUser(req.session.userId!);
     res.json(purchases);
+  });
+  
+  // Stripe payment routes
+  apiRouter.post('/create-payment-intent', isAuthenticated, async (req, res) => {
+    try {
+      const { amount } = req.body;
+      
+      if (!amount || isNaN(Number(amount))) {
+        return res.status(400).json({ message: "Valid amount is required" });
+      }
+      
+      // Create a PaymentIntent with the order amount and currency
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: "usd",
+        // In a real app, add metadata about the purchase and customer
+        metadata: {
+          userId: req.session.userId!.toString(),
+          integration_check: 'jawastock_payment'
+        }
+      });
+      
+      res.json({ 
+        clientSecret: paymentIntent.client_secret 
+      });
+    } catch (error: any) {
+      console.error("Stripe payment intent error:", error);
+      res.status(500).json({ 
+        message: "Error creating payment intent", 
+        error: error.message 
+      });
+    }
   });
   
   // Register the API router

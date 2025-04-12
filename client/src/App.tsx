@@ -10,6 +10,8 @@ import Upload from "@/pages/Upload";
 import Dashboard from "@/pages/Dashboard";
 import AdminPanel from "@/pages/AdminPanel";
 import Checkout from "@/pages/Checkout";
+import StripeCheckout from "@/pages/stripe-checkout";
+import CheckoutSuccess from "@/pages/checkout-success";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { useState, useEffect } from "react";
