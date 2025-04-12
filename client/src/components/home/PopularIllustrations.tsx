@@ -57,7 +57,7 @@ const PopularIllustrations = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            {illustrations.map((illustration) => (
+            {illustrations.map((illustration: any) => (
               <IllustrationCard key={illustration.id} illustration={illustration} />
             ))}
           </div>

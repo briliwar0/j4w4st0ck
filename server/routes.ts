@@ -9,6 +9,14 @@ import {
   insertPurchaseSchema 
 } from "@shared/schema";
 import { z } from "zod";
+import 'express-session';
+
+// Extend Express Request type to include session
+declare module 'express-session' {
+  interface SessionData {
+    userId?: number;
+  }
+}
 
 // Setup Stripe
 if (!process.env.STRIPE_SECRET_KEY) {
