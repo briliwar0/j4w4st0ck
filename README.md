@@ -124,9 +124,9 @@ Untuk deploy ke Netlify:
 2. Login ke [Netlify](https://app.netlify.com/)
 3. Klik "Add new site" → "Import an existing project"
 4. Pilih repositori GitHub Anda
-5. Konfigurasi pengaturan build:
-   - Build command: `npm run build`
-   - Publish directory: `dist`
+5. Konfigurasi pengaturan build akan otomatis diambil dari file `netlify.toml`:
+   - Build command: `npm install --include=dev && npm run build && node netlify-postbuild.js`
+   - Publish directory: `dist/public`
 
 6. Konfigurasi variabel lingkungan di dashboard Netlify:
    - DATABASE_URL: URL database PostgreSQL Anda (gunakan layanan seperti Neon, Supabase, atau Railway)

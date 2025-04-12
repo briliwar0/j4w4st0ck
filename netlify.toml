@@ -1,8 +1,8 @@
 # Netlify configuration for JawaStock
 
 [build]
-  command = "node netlify-build.mjs"
-  publish = "dist"
+  command = "npm install --include=dev && npm run build && node netlify-postbuild.js"
+  publish = "dist/public"
   functions = "functions-build"
 
 # Environment variable setup
