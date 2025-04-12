@@ -13,6 +13,29 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <title>JawaStock - Stock Photos, Videos & Digital Assets</title>
+    <!-- Preload critical script -->
+    <script>
+      // Fallback content if scripts fail to load
+      window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          const root = document.getElementById('root');
+          if (root && !root.hasChildNodes()) {
+            console.log('Creating fallback content...');
+            const loadingElement = document.createElement('div');
+            loadingElement.style.textAlign = 'center';
+            loadingElement.style.padding = '40px';
+            loadingElement.style.fontFamily = 'Inter, -apple-system, BlinkMacSystemFont, sans-serif';
+            loadingElement.innerHTML = `
+              <h2 style="font-size: 24px; margin-bottom: 16px;">JawaStock</h2>
+              <p style="margin-bottom: 24px;">Loading assets marketplace...</p>
+              <div style="display: inline-block; width: 40px; height: 40px; border: 3px solid rgba(0,0,0,0.1); border-radius: 50%; border-top-color: #3b82f6; animation: spin 1s ease-in-out infinite;"></div>
+              <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+            `;
+            root.appendChild(loadingElement);
+          }
+        }, 1000);
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
