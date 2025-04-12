@@ -18,6 +18,11 @@ const Navbar = () => {
   const { cartItems } = useCart();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [modalView, setModalView] = useState<"login" | "register">("login");
+  
+  // Safely get cart length for UI display
+  const getCartLength = () => {
+    return cartItems && Array.isArray(cartItems) ? cartItems.length : 0;
+  };
 
   const handleOpenAuthModal = (view: "login" | "register") => {
     setModalView(view);
@@ -123,7 +128,7 @@ const Navbar = () => {
                 className="text-neutral-600 hover:text-primary relative"
               >
                 <ShoppingCart />
-                {cartItems.length > 0 && (
+                {cartItems && cartItems.length > 0 && (
                   <Badge
                     variant="destructive"
                     className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0"

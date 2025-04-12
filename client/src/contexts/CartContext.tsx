@@ -56,9 +56,20 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             
             // In a real app, we would fetch the assets for each cart item
             // For now, use the sample data to match cart items to assets
-            const assets = items.map((item: CartItem) => {
-              return allAssets.find(asset => asset.id === item.assetId) || null;
-            }).filter(Boolean);
+            let assets = [];
+            try {
+              if (Array.isArray(items)) {
+                assets = items.map((item: CartItem) => {
+                  return allAssets.find(asset => asset.id === item.assetId) || null;
+                }).filter(Boolean);
+              } else {
+                console.error("Cart items are not an array:", items);
+                assets = [];
+              }
+            } catch (error) {
+              console.error("Error mapping cart items:", error);
+              assets = [];
+            }
             
             setCartAssets(assets);
           }
