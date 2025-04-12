@@ -23,12 +23,19 @@ declare module 'express-session' {
 }
 
 // Setup Stripe
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+let stripe: Stripe | null = null;
+try {
+  if (process.env.STRIPE_SECRET_KEY) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2023-10-16",
+    });
+    console.log("Stripe initialized successfully");
+  } else {
+    console.warn("Stripe secret key not found. Payment functionality will be limited.");
+  }
+} catch (error) {
+  console.error("Error initializing Stripe:", error);
 }
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2023-10-16",
-});
 
 // Utility function to validate request against a schema
 const validateRequest = <T extends z.ZodTypeAny>(

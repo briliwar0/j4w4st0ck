@@ -23,10 +23,16 @@ import { ArrowLeft, AlertTriangle, LockIcon } from "lucide-react";
 
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
-if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
-  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
+let stripePromise = null;
+try {
+  if (import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
+    stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+  } else {
+    console.warn('Stripe key not found. Checkout functionality will be limited.');
+  }
+} catch (error) {
+  console.error('Error initializing Stripe:', error);
 }
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const CheckoutForm = () => {
   const stripe = useStripe();
@@ -323,7 +329,18 @@ const StripeCheckout = () => {
                     <CardTitle>Informasi Pembayaran</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {clientSecret ? (
+                    {!stripePromise ? (
+                      <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
+                        <AlertTriangle className="h-12 w-12 text-amber-500 mb-4" />
+                        <h3 className="text-lg font-medium mb-2">Pembayaran Tidak Tersedia</h3>
+                        <p className="text-neutral-600 mb-4">
+                          Sistem pembayaran sedang dalam pemeliharaan. Silakan coba kembali nanti.
+                        </p>
+                        <Button onClick={() => navigate("/")}>
+                          Kembali ke Beranda
+                        </Button>
+                      </div>
+                    ) : clientSecret ? (
                       <Elements 
                         stripe={stripePromise} 
                         options={{ 
