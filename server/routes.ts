@@ -191,13 +191,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Validate type parameter - it must be one of the allowed asset types
     let validatedType: string | undefined = undefined;
     if (type) {
+      // Skip validation if type is 'all'
+      if (type === 'all') {
+        validatedType = undefined; // treat 'all' as no type filter
+      }
       // If it's a single valid type, use it directly
-      if (['photo', 'video', 'vector', 'illustration', 'music'].includes(type as string)) {
+      else if (['photo', 'video', 'vector', 'illustration', 'music'].includes(type as string)) {
         validatedType = type as string;
       } else {
         // If we get here, the type parameter is not valid
         return res.status(400).json({ 
-          message: "Invalid asset type. Must be one of: photo, video, vector, illustration, music" 
+          message: "Invalid asset type. Must be one of: photo, video, vector, illustration, music, or 'all'" 
         });
       }
     }
