@@ -483,6 +483,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Valid amount is required" });
       }
       
+      // Check if Stripe is initialized
+      if (!stripe) {
+        console.warn("Payment attempt failed: Stripe not initialized");
+        return res.status(503).json({ 
+          message: "Payment service unavailable", 
+          error: "Payment processing is currently unavailable. Please try again later."
+        });
+      }
+      
       // Create a PaymentIntent with the order amount and currency
       const paymentIntent = await stripe.paymentIntents.create({
         amount: Math.round(amount * 100), // Convert to cents
@@ -513,6 +522,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
         return res.status(400).json({ message: "Cart items are required" });
+      }
+      
+      // Check if Stripe is initialized
+      if (!stripe) {
+        console.warn("Purchase verification failed: Stripe not initialized");
+        return res.status(503).json({ 
+          message: "Payment service unavailable", 
+          error: "Payment processing is currently unavailable. Please try again later."
+        });
       }
       
       // Verify payment with Stripe
