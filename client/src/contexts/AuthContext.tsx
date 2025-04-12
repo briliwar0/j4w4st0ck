@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
+        setIsLoading(true);
         const response = await fetch("/api/auth/me", {
           credentials: "include",
         });
@@ -47,9 +48,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);
+          console.log("User authenticated:", userData);
+        } else {
+          console.log("User not authenticated");
+          setUser(null);
         }
       } catch (error) {
         console.error("Auth check error:", error);
+        setUser(null);
       } finally {
         setIsLoading(false);
       }
