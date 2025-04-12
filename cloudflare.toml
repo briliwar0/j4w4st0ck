@@ -1,16 +1,35 @@
+# Cloudflare Pages configuration
+
 [build]
-command = "sh ./build.sh"
+command = "chmod +x ./build.sh && ./build.sh"
 publish = "dist"
 
 [build.environment]
 NODE_VERSION = "20"
+NPM_VERSION = "9"
 
-[site]
-bucket = "./dist"
-entry-point = "./functions"
+# Ensure routes are handled correctly for SPA
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
 
+# Exclude API routes from SPA redirect
+[[redirects]]
+from = "/api/*"
+to = "/api/:splat"
+status = 200
+
+# Specify the entry point for Cloudflare Functions
+[functions]
+directory = "functions"
+node_compat = true
+
+# Environment-specific configurations
 [env.production]
 name = "production"
+NODE_ENV = "production"
 
-[env.staging]
-name = "staging"
+[env.preview]
+name = "preview"
+NODE_ENV = "development"

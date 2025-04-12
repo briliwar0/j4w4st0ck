@@ -1,0 +1,28 @@
+# Wrangler configuration for Cloudflare Pages
+
+name = "jawastock"
+type = "webpack"
+account_id = "" # Your Cloudflare account ID - leave empty if not known
+workers_dev = true
+route = ""
+zone_id = "" # Your Cloudflare zone ID - leave empty if not known
+compatibility_date = "2023-10-16"
+
+[site]
+bucket = "./dist"
+entry-point = "functions"
+
+[build]
+command = "sh ./build.sh"
+upload.format = "service-worker"
+
+[build.upload]
+format = "service-worker"
+
+[env.production]
+name = "jawastock-production"
+workers_dev = false
+
+[env.staging]
+name = "jawastock-staging"
+workers_dev = true
