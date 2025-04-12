@@ -17,7 +17,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, ArrowLeft, AlertTriangle } from "lucide-react";
+import { ShoppingCart, ArrowLeft, AlertTriangle, CreditCard } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const Checkout = () => {
@@ -175,7 +175,60 @@ const Checkout = () => {
                   </CardContent>
                 </Card>
 
-                <CheckoutForm />
+                {/* Payment options */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                  <Card className="hover:border-primary transition-colors cursor-pointer">
+                    <CardContent className="p-6 flex flex-col items-center justify-center h-full text-center">
+                      <div className="mb-4 w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center">
+                        <CreditCard className="h-8 w-8 text-primary" />
+                      </div>
+                      <h3 className="text-lg font-medium mb-2">Pay with Credit Card</h3>
+                      <p className="text-neutral-600 mb-4">
+                        Use our standard checkout process with credit card payment
+                      </p>
+                      <Button 
+                        className="w-full bg-primary hover:bg-primary-dark"
+                        onClick={() => navigate('/stripe-checkout')}
+                      >
+                        Continue with Stripe
+                      </Button>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="border-dashed hover:border-primary transition-colors cursor-pointer">
+                    <CardContent className="p-6 flex flex-col items-center justify-center h-full text-center">
+                      <div className="mb-4 w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center">
+                        <svg 
+                          className="h-8 w-8 text-primary" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        >
+                          <rect x="3" y="5" width="18" height="14" rx="2" />
+                          <path d="M3 10h18" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-medium mb-2">Traditional Form</h3>
+                      <p className="text-neutral-600 mb-4">
+                        Use our standard checkout form with manual card entry
+                      </p>
+                      <Button 
+                        className="w-full"
+                        variant="outline"
+                        onClick={() => document.getElementById('checkout-form-section')?.scrollIntoView({ behavior: 'smooth' })}
+                      >
+                        Continue with Form
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div id="checkout-form-section">
+                  <CheckoutForm />
+                </div>
               </>
             )}
           </div>
