@@ -1,0 +1,56 @@
+# Netlify configuration for JawaStock
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "functions-build"
+
+# Environment variable setup
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_VERSION = "9"
+
+# Handle SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  # Exclude API routes from SPA redirect
+  conditions = {Path = ["!/api/*"]}
+
+# Handle API routes with Netlify functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+# Set security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://res.cloudinary.com; connect-src 'self' https://api.stripe.com; frame-src https://js.stripe.com;"
+
+# Development environment settings
+[context.development]
+  environment = { NODE_ENV = "development" }
+
+# Production environment settings
+[context.production]
+  environment = { NODE_ENV = "production" }
+
+# Branch deploy settings
+[context.branch-deploy]
+  environment = { NODE_ENV = "development" }
+
+# Deploy preview settings (for pull requests)
+[context.deploy-preview]
+  environment = { NODE_ENV = "development" }
+
+# Netlify function bundle settings
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["sharp", "pg-native"]
