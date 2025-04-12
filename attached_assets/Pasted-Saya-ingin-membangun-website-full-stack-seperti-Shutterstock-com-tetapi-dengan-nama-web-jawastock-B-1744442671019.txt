@@ -1,0 +1,106 @@
+Saya ingin membangun website full-stack seperti Shutterstock.com tetapi dengan nama web jawastock. Berikut adalah fitur dan teknologi yang saya butuhkan:
+
+### 🎯 Tujuan:
+
+Website untuk menjual dan membeli gambar, video, atau asset digital, dengan sistem kontributor dan pembayaran otomatis.
+
+---
+
+### 📦 Fitur Utama:
+
+1. **Home Page**
+
+   - Daftar asset terbaru / trending
+   - Tombol search, kategori, dan navigasi user-friendly
+
+2. **Browsing & Search**
+
+   - Search bar
+   - Filter berdasarkan kategori, harga, lisensi
+   - Sorting (terbaru, terpopuler, dll)
+
+3. **User System**
+
+   - Login / Register (biasa dan via Google)
+   - Role: User biasa dan Kontributor
+   - Dashboard user: Riwayat pembelian, profil, langganan
+
+4. **Upload & Contributor System**
+
+   - Halaman upload asset untuk kontributor
+   - Preview otomatis
+   - Watermark otomatis
+   - Status: pending, approved, rejected
+
+5. **Media Preview**
+
+   - Tampilan media dengan watermark
+   - Tombol download tidak aktif sampai dibeli
+
+6. **Pembayaran**
+
+   - Integrasi Stripe / Midtrans
+   - Bisa beli satuan atau langganan
+   - Webhook untuk aktivasi download otomatis
+
+7. **Download & Lisensi**
+
+   - Download otomatis setelah pembayaran
+   - Kirim lisensi PDF/email
+   - Sistem anti-leak link (link expired)
+
+8. **Admin Panel**
+
+   - Dashboard admin: melihat user, transaksi, statistik
+   - Approve / reject asset dari kontributor
+   - Hapus konten, suspend user
+
+9. **SEO & Performance**
+
+   - Optimasi meta tags (OpenGraph, title, desc)
+   - Sitemap & robots.txt
+   - SSR/SSG untuk SEO
+   - Lazy loading dan CDN untuk media
+
+---
+
+### 🛠️ Stack yang Digunakan:
+
+#### Frontend:
+
+- Next.js + TypeScript
+- TailwindCSS + ShadcnUI
+- Framer Motion
+- Axios / TanStack Query
+
+#### Backend:
+
+- Node.js + Express.js atau Next API Routes
+- PostgreSQL dengan Drizzle ORM atau Prisma
+- Auth: JWT + OAuth (Google)
+- File storage: AWS S3 / Cloudinary
+- Image watermarking: Sharp
+
+#### Dev Tools:
+
+- GitHub untuk version control
+- Vercel atau Netlify untuk deploy frontend
+- Railway / Render / VPS untuk backend
+
+---
+
+### 🧠 Tugas AI Agent:
+
+1. Buatkan struktur proyek untuk full-stack app ini (frontend + backend).
+2. Buat komponen awal:
+   - Home page
+   - Auth (register/login)
+   - Upload page (dengan preview dan watermark dummy)
+   - Halaman detail media
+   - Halaman checkout dummy
+3. Siapkan dummy data untuk testing
+4. Tambahkan routing, state management, dan SEO dasar
+
+---
+
+Saya akan mengembangkan fitur lainnya secara bertahap, jadi bantu saya dengan membuat dasar proyek yang bersih, modular, dan siap dikembangkan lebih lanjut.
