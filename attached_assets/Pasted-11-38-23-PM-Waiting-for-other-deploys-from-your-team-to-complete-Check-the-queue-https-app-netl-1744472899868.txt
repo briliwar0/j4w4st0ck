@@ -1,0 +1,191 @@
+11:38:23 PM: Waiting for other deploys from your team to complete. Check the queue: https://app.netlify.com/teams/dimaskur1533/builds
+11:39:37 PM: build-image version: 69179d37c92919bcf501ca9a8de95762ede3ffc5 (noble)
+11:39:37 PM: buildbot version: 648e870c693a8227febba2139caf43dd78353ae3
+11:39:37 PM: Building without cache
+11:39:37 PM: Starting to prepare the repo for build
+11:39:38 PM: No cached dependencies found. Cloning fresh repo
+11:39:38 PM: git clone --filter=blob:none https://github.com/briliwar0/j4w4st0ck
+11:39:38 PM: Preparing Git Reference refs/heads/main
+11:39:39 PM: Custom publish path detected. Proceeding with the specified path: 'dist/public'
+11:39:39 PM: Custom functions path detected. Proceeding with the specified path: 'functions-build'
+11:39:39 PM: Custom build command detected. Proceeding with the specified command: 'npm install --include=dev && npm run build && node netlify-postbuild.js'
+11:39:40 PM: Starting to install dependencies
+11:39:40 PM: Python version set to 3.13.2
+11:39:40 PM: Ruby version set to 2.7.2
+11:39:41 PM: mise go@1.19         install
+11:39:41 PM: mise go@1.19         download go1.19.linux-amd64.tar.gz
+11:39:42 PM: mise go@1.19         checksum go1.19.linux-amd64.tar.gz
+11:39:42 PM: mise go@1.19         extract go1.19.linux-amd64.tar.gz
+11:39:44 PM: mise go@1.19         go version
+11:39:44 PM: mise go@1.19         go version go1.19 linux/amd64
+11:39:44 PM: mise go@1.19       ✓ installed
+11:39:44 PM: Go version set to 1.19
+11:39:45 PM: Using PHP version 8.3
+11:39:47 PM: Downloading and installing node v20.19.0...
+11:39:47 PM: Downloading https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-x64.tar.xz...
+11:39:48 PM: Computing checksum with sha256sum
+11:39:48 PM: Checksums matched!
+11:39:50 PM: Now using node v20.19.0 (npm v10.8.2)
+11:39:50 PM: Enabling Node.js Corepack
+11:39:50 PM: Started restoring cached build plugins
+11:39:50 PM: Finished restoring cached build plugins
+11:39:50 PM: WARNING: The environment variable 'NODE_ENV' is set to 'production'. Any 'devDependencies' in package.json will not be installed
+11:39:50 PM: Started restoring cached corepack dependencies
+11:39:50 PM: Finished restoring cached corepack dependencies
+11:39:50 PM: No npm workspaces detected
+11:39:50 PM: Started restoring cached node modules
+11:39:50 PM: Finished restoring cached node modules
+11:39:51 PM: Found npm version (10.8.2) that doesn't match expected (9)
+Installing npm version 9
+11:39:54 PM: removed 13 packages, and changed 86 packages in 3s
+11:39:54 PM: 27 packages are looking for funding
+11:39:54 PM:   run `npm fund` for details
+11:39:54 PM: npm installed successfully
+11:39:54 PM: Installing npm packages using npm version 9.9.4
+11:39:56 PM: npm WARN deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+11:39:56 PM: npm WARN deprecated
+11:39:56 PM: npm WARN deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+11:40:08 PM: added 430 packages, and audited 431 packages in 14s
+11:40:08 PM: 57 packages are looking for funding
+11:40:08 PM:   run `npm fund` for details
+11:40:08 PM: 1 moderate severity vulnerability
+11:40:08 PM: To address all issues, run:
+11:40:08 PM:   npm audit fix
+11:40:08 PM: Run `npm audit` for details.
+11:40:08 PM: npm packages installed
+11:40:09 PM: Successfully installed dependencies
+11:40:09 PM: Starting build script
+11:40:10 PM: Detected 1 framework(s)
+11:40:10 PM: "vite" at version "5.4.14"
+11:40:10 PM: Section completed: initializing
+11:40:12 PM: ​
+11:40:12 PM: Netlify Build                                                 
+11:40:12 PM: ────────────────────────────────────────────────────────────────
+11:40:12 PM: ​
+11:40:12 PM: ❯ Version
+11:40:12 PM:   @netlify/build 31.0.2
+11:40:12 PM: ​
+11:40:12 PM: ❯ Flags
+11:40:12 PM:   accountId: 67ccb8e7b00795aaa4f9bfc7
+11:40:12 PM:   baseRelDir: true
+11:40:12 PM:   buildId: 67fa88efbf1cf9d4f92e9112
+11:40:12 PM:   deployId: 67fa88efbf1cf9d4f92e9114
+11:40:12 PM: ​
+11:40:12 PM: ❯ Current directory
+11:40:12 PM:   /opt/build/repo
+11:40:12 PM: ​
+11:40:12 PM: ❯ Config file
+11:40:12 PM:   /opt/build/repo/netlify.toml
+11:40:12 PM: ​
+11:40:12 PM: ❯ Context
+11:40:12 PM:   production
+11:40:12 PM: ​
+11:40:12 PM: build.command from netlify.toml                               
+11:40:12 PM: ────────────────────────────────────────────────────────────────
+11:40:12 PM: ​
+11:40:12 PM: $ npm install --include=dev && npm run build && node netlify-postbuild.js
+11:40:13 PM: npm WARN deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+11:40:13 PM: npm WARN deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+11:40:15 PM: added 83 packages, and audited 514 packages in 3s
+11:40:15 PM: 66 packages are looking for funding
+11:40:15 PM:   run `npm fund` for details
+11:40:15 PM: 8 moderate severity vulnerabilities
+11:40:15 PM: To address issues that do not require attention, run:
+11:40:15 PM:   npm audit fix
+11:40:15 PM: To address all issues (including breaking changes), run:
+11:40:15 PM:   npm audit fix --force
+11:40:15 PM: Run `npm audit` for details.
+11:40:15 PM: > rest-express@1.0.0 build
+11:40:15 PM: > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+11:40:16 PM: vite v5.4.14 building for production...
+11:40:16 PM: transforming...
+11:40:16 PM: Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+11:40:16 PM:   npx update-browserslist-db@latest
+11:40:16 PM:   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+11:40:23 PM: Site is live ✨
+11:40:22 PM: Starting post processing
+11:40:22 PM: Skipping form detection
+11:40:22 PM: Post processing - header rules
+11:40:22 PM: Post processing - redirect rules
+11:40:22 PM: Post processing done
+11:40:22 PM: Section completed: postprocessing
+11:40:20 PM: ✓ 1877 modules transformed.
+11:40:20 PM: rendering chunks...
+11:40:20 PM: computing gzip size...
+11:40:20 PM: ../dist/public/index.html                   2.70 kB │ gzip:   1.06 kB
+11:40:20 PM: ../dist/public/assets/index-O3QhSgwh.css   68.12 kB │ gzip:  11.90 kB
+11:40:20 PM: ../dist/public/assets/index-B7kEe6fA.js   638.25 kB │ gzip: 186.48 kB
+11:40:20 PM: 
+11:40:20 PM: (!) Some chunks are larger than 500 kB after minification. Consider:
+11:40:20 PM: - Using dynamic import() to code-split the application
+11:40:20 PM: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+11:40:20 PM: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+11:40:20 PM: ✓ built in 4.55s
+11:40:20 PM:   dist/index.js  43.2kb
+11:40:20 PM: ⚡ Done in 8ms
+11:40:20 PM: Running post-build script for Netlify...
+11:40:20 PM: Created _redirects file at /opt/build/repo/dist/public/_redirects
+11:40:20 PM: Functions directory exists, skipping copy operation
+11:40:20 PM: Post-build script completed successfully!
+11:40:20 PM: ​
+11:40:20 PM: (build.command completed in 8.8s)
+11:40:20 PM: ​
+11:40:20 PM: Functions bundling                                            
+11:40:20 PM: ────────────────────────────────────────────────────────────────
+11:40:20 PM: ​
+11:40:20 PM: Packaging Functions from functions-build directory:
+11:40:20 PM:  - db-migrate.js
+11:40:20 PM: ​
+11:40:21 PM: ▲ [WARNING] The CommonJS "exports" variable is treated as a global variable in an ECMAScript module and may not work as expected [commonjs-variable-in-esm]
+11:40:21 PM:     functions-build/db-migrate.js:6:0:
+11:40:21 PM:       6 │ exports.handler = async function(event, context) {
+11:40:21 PM:         ╵ ~~~~~~~
+11:40:21 PM:   This file is considered to be an ECMAScript module because the enclosing "package.json" file sets the type of this file to "module":
+11:40:21 PM:     package.json:4:10:
+11:40:21 PM:       4 │   "type": "module",
+11:40:21 PM:         ╵           ~~~~~~~~
+11:40:21 PM:   Node's package format requires that CommonJS files in a "type": "module" package use the ".cjs" file extension.
+11:40:22 PM: ​
+11:40:22 PM: ❯ Functions bundled with warnings:
+11:40:22 PM:    - db-migrate.zip
+11:40:22 PM: ​
+11:40:22 PM: (Functions bundling completed in 1.3s)
+11:40:22 PM: ​
+11:40:22 PM: Deploy site                                                   
+11:40:22 PM: ────────────────────────────────────────────────────────────────
+11:40:22 PM: ​
+11:40:22 PM: Starting to deploy site from 'dist/public'
+11:40:22 PM: Calculating files to upload
+11:40:22 PM: 0 new file(s) to upload
+11:40:22 PM: 0 new function(s) to upload
+11:40:22 PM: Section completed: deploying
+11:40:22 PM: Site deploy was successfully initiated
+11:40:22 PM: ​
+11:40:22 PM: (Deploy site completed in 378ms)
+11:40:22 PM: ​
+11:40:22 PM: Netlify Build Complete                                        
+11:40:22 PM: ────────────────────────────────────────────────────────────────
+11:40:22 PM: ​
+11:40:22 PM: (Netlify Build completed in 10.7s)
+11:40:23 PM: Caching artifacts
+11:40:23 PM: Started saving node modules
+11:40:23 PM: Finished saving node modules
+11:40:23 PM: Started saving build plugins
+11:40:23 PM: Finished saving build plugins
+11:40:23 PM: Started saving mise cache
+11:40:37 PM: Finished saving mise cache
+11:40:37 PM: Started saving corepack cache
+11:40:37 PM: Finished saving corepack cache
+11:40:37 PM: Started saving emacs cask dependencies
+11:40:37 PM: Finished saving emacs cask dependencies
+11:40:37 PM: Started saving maven dependencies
+11:40:37 PM: Finished saving maven dependencies
+11:40:37 PM: Started saving boot dependencies
+11:40:37 PM: Finished saving boot dependencies
+11:40:37 PM: Started saving rust rustup cache
+11:40:37 PM: Finished saving rust rustup cache
+11:40:50 PM: Build script success
+11:40:50 PM: Section completed: building
+11:40:55 PM: Uploading Cache of size 532.4MB
+11:40:56 PM: Section completed: cleanup
+11:40:56 PM: Finished processing build request in 1m19.001s

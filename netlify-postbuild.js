@@ -18,6 +18,25 @@ const redirectsPath = path.join(__dirname, 'dist', 'public', '_redirects');
 fs.writeFileSync(redirectsPath, redirectsContent);
 console.log(`Created _redirects file at ${redirectsPath}`);
 
+// Perbaiki index.html untuk deployment
+const indexPath = path.join(__dirname, 'dist', 'public', 'index.html');
+if (fs.existsSync(indexPath)) {
+  console.log('Fixing asset paths in index.html...');
+  let indexHtml = fs.readFileSync(indexPath, 'utf8');
+  
+  // Perbaiki asset paths agar dimulai dari root
+  indexHtml = indexHtml.replace(/src="\/assets\//g, 'src="./assets/');
+  indexHtml = indexHtml.replace(/href="\/assets\//g, 'href="./assets/');
+  
+  // Pastikan base href tersedia
+  if (!indexHtml.includes('<base href="/">')) {
+    indexHtml = indexHtml.replace('<head>', '<head>\n    <base href="/">');
+  }
+  
+  fs.writeFileSync(indexPath, indexHtml);
+  console.log('Fixed index.html asset paths');
+}
+
 // Salin fungsi API jika diperlukan
 const functionsSrcDir = path.join(__dirname, 'functions-build');
 if (fs.existsSync(functionsSrcDir)) {
@@ -25,6 +44,21 @@ if (fs.existsSync(functionsSrcDir)) {
 } else {
   console.log('Creating functions directory...');
   fs.mkdirSync(functionsSrcDir, { recursive: true });
+}
+
+// Salin file db-migrate.js jika sudah ada
+const dbMigrateSrc = path.join(__dirname, 'functions', 'db-migrate.js');
+const dbMigrateDest = path.join(__dirname, 'functions-build', 'db-migrate.js');
+if (fs.existsSync(dbMigrateSrc)) {
+  console.log('Copying db-migrate.js to functions-build...');
+  try {
+    const content = fs.readFileSync(dbMigrateSrc, 'utf8')
+      .replace('exports.handler', 'export async function handler');
+    fs.writeFileSync(dbMigrateDest, content);
+    console.log('Successfully copied and updated db-migrate.js');
+  } catch (e) {
+    console.error('Error copying db-migrate.js:', e);
+  }
 }
 
 console.log('Post-build script completed successfully!');

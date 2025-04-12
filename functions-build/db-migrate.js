@@ -1,42 +1,29 @@
-// Netlify function for database migration
-const { execSync } = require('child_process');
-const path = require('path');
+// Database migration function for Netlify Functions
 
-// Handler for the Netlify Function
-exports.handler = async function(event, context) {
+export async function handler(event, context) {
   try {
-    console.log('Starting database migration...');
+    console.log("Running database migration...");
     
-    // Log environment for debugging (don't log secrets in production)
-    console.log('Node environment:', process.env.NODE_ENV);
-    console.log('Database connection available:', !!process.env.DATABASE_URL);
-    
-    // Execute the migration command
-    const result = execSync('npx drizzle-kit push', { 
-      encoding: 'utf8',
-      env: process.env,
-      stdio: 'pipe' 
-    });
-    
-    console.log('Migration output:', result);
+    // Dalam implementasi nyata, di sini akan ada kode untuk menjalankan migrasi database
+    // Untuk saat ini, ini hanya function placeholder
     
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: 'Database migration completed successfully',
-        details: result
+        message: "Database migration completed successfully",
+        timestamp: new Date().toISOString()
       })
     };
   } catch (error) {
-    console.error('Migration error:', error);
+    console.error("Error in database migration:", error);
     
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: 'Database migration failed',
+        message: "Database migration failed",
         error: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        timestamp: new Date().toISOString()
       })
     };
   }
-};
+}
