@@ -91,16 +91,31 @@ The application will be available at http://localhost:5000.
 
 ## Deployment
 
-### Cloudflare Pages (Current Setup)
-This project is configured for deployment on Cloudflare Pages using the settings in `cloudflare.toml` and `wrangler.toml`. 
+### Perbandingan Platform Deployment
 
-To deploy:
-1. Push your code to a GitHub repository
-2. Connect the repository to Cloudflare Pages
-3. Configure the build settings according to the `cloudflare.toml` file
-4. Set up environment variables in the Cloudflare Pages dashboard
+| Fitur | Cloudflare Pages | Netlify |
+|-------|-----------------|---------|
+| Build time | Cepat | Cepat |
+| Serverless functions | ✅ | ✅ |
+| Edge functions | ✅ | ✅ (lebih terbatas) |
+| Batas bandwith | Lebih tinggi | Lebih rendah pada tier gratis |
+| Custom domain | ✅ | ✅ |
+| SSL/TLS | Otomatis | Otomatis |
+| CI/CD | GitHub, GitLab | GitHub, GitLab, Bitbucket |
+| Database | Tidak terintegrasi langsung | Tidak terintegrasi langsung |
+| Harga | Tier free lebih murah | Tier berbayar lebih murah |
+| CDN | Cloudflare CDN Global | Netlify CDN Global |
 
-### Netlify (Alternative Setup)
+### Cloudflare Pages (Setup Saat Ini)
+Proyek ini dikonfigurasi untuk deployment di Cloudflare Pages menggunakan pengaturan di `cloudflare.toml` dan `wrangler.toml`. 
+
+Untuk deploy:
+1. Push kode Anda ke repositori GitHub
+2. Hubungkan repositori ke Cloudflare Pages
+3. Konfigurasi pengaturan build sesuai file `cloudflare.toml`
+4. Siapkan variabel lingkungan di dashboard Cloudflare Pages
+
+### Netlify (Setup Alternatif)
 Project ini dapat di-deploy di Netlify menggunakan konfigurasi `netlify.toml` yang disediakan.
 
 Untuk deploy ke Netlify:

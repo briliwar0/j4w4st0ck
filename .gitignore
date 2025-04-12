@@ -1,6 +1,47 @@
-node_modules
-dist
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build output
+dist/
+build/
+functions-build/
+.netlify/
+
+# Testing
+coverage/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
 .DS_Store
-server/public
-vite.config.ts.*
-*.tar.gz
+Thumbs.db
+
+# Temporary files
+temp-uploads/
+/tmp/
+
+# Drizzle migration files (optional - can be committed if desired)
+# /drizzle/migrations/
+
+# Local configuration files
+.vercel
+.gcloudignore
+firebase-debug.log
