@@ -1,1 +1,7 @@
-/*    /index.html   200
+# Netlify redirects file
+
+# Redirect API requests to serverless functions
+/api/*  /.netlify/functions/api/:splat  200
+
+# Redirect everything else to index.html so that the React router works
+/*      /index.html     200
