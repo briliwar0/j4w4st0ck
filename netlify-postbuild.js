@@ -1,8 +1,12 @@
 // netlify-postbuild.js
 // Script yang dijalankan setelah build untuk memastikan file redirects berada di tempat yang benar
 
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 console.log('Running post-build script for Netlify...');
 

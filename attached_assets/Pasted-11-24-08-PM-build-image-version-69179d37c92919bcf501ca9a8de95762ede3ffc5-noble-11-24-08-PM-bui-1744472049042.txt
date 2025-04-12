@@ -1,0 +1,179 @@
+11:24:08 PM: build-image version: 69179d37c92919bcf501ca9a8de95762ede3ffc5 (noble)
+11:24:08 PM: buildbot version: 648e870c693a8227febba2139caf43dd78353ae3
+11:24:08 PM: Building without cache
+11:24:08 PM: Starting to prepare the repo for build
+11:24:09 PM: No cached dependencies found. Cloning fresh repo
+11:24:09 PM: git clone --filter=blob:none https://github.com/briliwar0/j4w4st0ck
+11:24:09 PM: Preparing Git Reference refs/heads/main
+11:24:10 PM: Custom publish path detected. Proceeding with the specified path: 'dist/public'
+11:24:10 PM: Custom functions path detected. Proceeding with the specified path: 'functions-build'
+11:24:10 PM: Custom build command detected. Proceeding with the specified command: 'npm install --include=dev && npm run build && node netlify-postbuild.js'
+11:24:11 PM: Starting to install dependencies
+11:24:11 PM: Python version set to 3.13.2
+11:24:11 PM: Ruby version set to 2.7.2
+11:24:12 PM: mise go@1.19         install
+11:24:12 PM: mise go@1.19         download go1.19.linux-amd64.tar.gz
+11:24:13 PM: mise go@1.19         checksum go1.19.linux-amd64.tar.gz
+11:24:13 PM: mise go@1.19         extract go1.19.linux-amd64.tar.gz
+11:24:15 PM: mise go@1.19         go version
+11:24:15 PM: mise go@1.19         go version go1.19 linux/amd64
+11:24:15 PM: mise go@1.19       ✓ installed
+11:24:15 PM: Go version set to 1.19
+11:24:16 PM: Using PHP version 8.3
+11:24:18 PM: Downloading and installing node v20.19.0...
+11:24:18 PM: Downloading https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-x64.tar.xz...
+11:24:19 PM: Computing checksum with sha256sum
+11:24:19 PM: Checksums matched!
+11:24:21 PM: Now using node v20.19.0 (npm v10.8.2)
+11:24:21 PM: Enabling Node.js Corepack
+11:24:21 PM: Started restoring cached build plugins
+11:24:21 PM: Finished restoring cached build plugins
+11:24:21 PM: WARNING: The environment variable 'NODE_ENV' is set to 'production'. Any 'devDependencies' in package.json will not be installed
+11:24:21 PM: Started restoring cached corepack dependencies
+11:24:21 PM: Finished restoring cached corepack dependencies
+11:24:21 PM: No npm workspaces detected
+11:24:21 PM: Started restoring cached node modules
+11:24:21 PM: Finished restoring cached node modules
+11:24:22 PM: Found npm version (10.8.2) that doesn't match expected (9)
+Installing npm version 9
+11:24:25 PM: removed 13 packages, and changed 86 packages in 3s
+11:24:25 PM: 27 packages are looking for funding
+11:24:25 PM:   run `npm fund` for details
+11:24:25 PM: npm installed successfully
+11:24:25 PM: Installing npm packages using npm version 9.9.4
+11:24:28 PM: npm WARN deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+11:24:28 PM: npm WARN deprecated
+11:24:28 PM: npm WARN deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+11:24:35 PM: added 430 packages, and audited 431 packages in 10s
+11:24:35 PM: 57 packages are looking for funding
+11:24:35 PM:   run `npm fund` for details
+11:24:35 PM: 1 moderate severity vulnerability
+11:24:35 PM: To address all issues, run:
+11:24:35 PM:   npm audit fix
+11:24:35 PM: Run `npm audit` for details.
+11:24:35 PM: npm packages installed
+11:24:36 PM: Successfully installed dependencies
+11:24:36 PM: Starting build script
+11:24:37 PM: Detected 1 framework(s)
+11:24:37 PM: "vite" at version "5.4.14"
+11:24:37 PM: Section completed: initializing
+11:24:39 PM: ​
+11:24:39 PM: Netlify Build                                                 
+11:24:39 PM: ────────────────────────────────────────────────────────────────
+11:24:39 PM: ​
+11:24:39 PM: ❯ Version
+11:24:39 PM:   @netlify/build 31.0.2
+11:24:39 PM: ​
+11:24:39 PM: ❯ Flags
+11:24:39 PM:   accountId: 67ccb8e7b00795aaa4f9bfc7
+11:24:39 PM:   baseRelDir: true
+11:24:39 PM:   buildId: 67fa857bc95f4a6669ce2416
+11:24:39 PM:   deployId: 67fa857bc95f4a6669ce2418
+11:24:39 PM: ​
+11:24:39 PM: ❯ Current directory
+11:24:39 PM:   /opt/build/repo
+11:24:39 PM: ​
+11:24:39 PM: ❯ Config file
+11:24:39 PM:   /opt/build/repo/netlify.toml
+11:24:39 PM: ​
+11:24:39 PM: ❯ Context
+11:24:39 PM:   production
+11:24:39 PM: ​
+11:24:39 PM: build.command from netlify.toml                               
+11:24:39 PM: ────────────────────────────────────────────────────────────────
+11:24:39 PM: ​
+11:24:39 PM: $ npm install --include=dev && npm run build && node netlify-postbuild.js
+11:24:40 PM: npm WARN deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+11:24:40 PM: npm WARN deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+11:24:42 PM: added 83 packages, and audited 514 packages in 3s
+11:24:42 PM: 66 packages are looking for funding
+11:24:42 PM:   run `npm fund` for details
+11:24:42 PM: 8 moderate severity vulnerabilities
+11:24:42 PM: To address issues that do not require attention, run:
+11:24:42 PM:   npm audit fix
+11:24:42 PM: To address all issues (including breaking changes), run:
+11:24:42 PM:   npm audit fix --force
+11:24:42 PM: Run `npm audit` for details.
+11:24:42 PM: > rest-express@1.0.0 build
+11:24:42 PM: > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+11:24:43 PM: vite v5.4.14 building for production...
+11:24:43 PM: transforming...
+11:24:43 PM: Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+11:24:43 PM:   npx update-browserslist-db@latest
+11:24:43 PM:   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+11:24:48 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+11:24:47 PM: ✓ 1877 modules transformed.
+11:24:48 PM: rendering chunks...
+11:24:48 PM: computing gzip size...
+11:24:48 PM: ../dist/public/index.html                   2.70 kB │ gzip:   1.06 kB
+11:24:48 PM: ../dist/public/assets/index-O3QhSgwh.css   68.12 kB │ gzip:  11.90 kB
+11:24:48 PM: ../dist/public/assets/index-B7kEe6fA.js   638.25 kB │ gzip: 186.48 kB
+11:24:48 PM: 
+11:24:48 PM: (!) Some chunks are larger than 500 kB after minification. Consider:
+11:24:48 PM: - Using dynamic import() to code-split the application
+11:24:48 PM: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+11:24:48 PM: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+11:24:48 PM: ✓ built in 4.78s
+11:24:48 PM:   dist/index.js  43.2kb
+11:24:48 PM: ⚡ Done in 17ms
+11:24:48 PM: file:///opt/build/repo/netlify-postbuild.js:4
+11:24:48 PM: const fs = require('fs');
+11:24:48 PM:            ^
+11:24:48 PM: ReferenceError: require is not defined in ES module scope, you can use import instead
+11:24:48 PM: This file is being treated as an ES module because it has a '.js' file extension and '/opt/build/repo/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+11:24:48 PM:     at file:///opt/build/repo/netlify-postbuild.js:4:12
+11:24:48 PM:     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+11:24:48 PM:     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+11:24:48 PM:     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+11:24:48 PM: Node.js v20.19.0
+11:24:48 PM: ​
+11:24:48 PM: "build.command" failed                                        
+11:24:48 PM: ────────────────────────────────────────────────────────────────
+11:24:48 PM: ​
+11:24:48 PM:   Error message
+11:24:48 PM:   Command failed with exit code 1: npm install --include=dev && npm run build && node netlify-postbuild.js (https://ntl.fyi/exit-code-1)
+11:24:48 PM: ​
+11:24:48 PM:   Error location
+11:24:48 PM:   In build.command from netlify.toml:
+11:24:48 PM:   npm install --include=dev && npm run build && node netlify-postbuild.js
+11:24:48 PM: ​
+11:24:48 PM:   Resolved config
+11:24:48 PM:   build:
+11:24:48 PM:     command: npm install --include=dev && npm run build && node netlify-postbuild.js
+11:24:48 PM:     commandOrigin: config
+11:24:48 PM:     environment:
+11:24:48 PM:       - NODE_VERSION
+11:24:48 PM:       - NPM_VERSION
+11:24:48 PM:       - NODE_ENV
+11:24:48 PM:     publish: /opt/build/repo/dist/public
+11:24:48 PM:     publishOrigin: config
+11:24:48 PM:   functions:
+11:24:48 PM:     '*':
+11:24:48 PM:       external_node_modules:
+11:24:48 PM:         - sharp
+11:24:48 PM:         - pg-native
+11:24:48 PM:       node_bundler: esbuild
+11:24:48 PM:   functionsDirectory: /opt/build/repo/functions-build
+11:24:48 PM:   headers:
+11:24:48 PM:     - for: /*
+      values:
+        Content-Security-Policy: 'default-src ''self''; script-src ''self'' ''unsafe-inline'' https://js.stripe.com; style-src ''self'' ''unsafe-inline''; img-src ''self'' data: https://res.cloudinary.com; connect-src ''self'' https://api.stripe.com; frame-src https://js.stripe.com;'
+        Referrer-Policy: strict-origin-when-cross-origin
+        X-Content-Type-Options: nosniff
+        X-Frame-Options: DENY
+        X-XSS-Protection: 1; mode=block
+  headersOrigin: config
+  redirects:
+    - conditions:
+        Path:
+          - '!/api/*'
+      from: /*
+      status: 200
+      to: /index.html
+    - from: /api/*
+      status: 200
+      to: /.netlify/functions/api/:splat
+  redirectsOrigin: config
+11:24:48 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+11:24:48 PM: Failing build: Failed to build site
+11:24:49 PM: Finished processing build request in 40.427s
