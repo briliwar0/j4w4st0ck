@@ -37,11 +37,12 @@ import { Search, ChevronDown, Filter, X } from "lucide-react";
 import { allAssets } from "@/lib/sample-data";
 
 const Browse = () => {
-  const [, params] = useLocation();
-  const searchParams = new URLSearchParams(params);
+  const [location] = useLocation();
+  // Parse the current URL query params
+  const searchParams = new URLSearchParams(window.location.search);
   
   const initialQuery = searchParams.get("query") || "";
-  const initialType = searchParams.get("type") || "";
+  const initialType = searchParams.get("type") || "all";
   
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [assetType, setAssetType] = useState(initialType);
@@ -58,7 +59,7 @@ const Browse = () => {
       params.append("query", searchQuery);
     }
     
-    if (assetType) {
+    if (assetType && assetType !== "all") {
       params.append("type", assetType);
     }
     
@@ -110,21 +111,23 @@ const Browse = () => {
     }
   });
 
+  // Get navigate function outside of handleSearch
+  const [, navigate] = useLocation();
+  
   // Handle search form submission
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Update URL with search params
-    const [, navigate] = useLocation();
     const params = new URLSearchParams();
     if (searchQuery) params.append("query", searchQuery);
-    if (assetType) params.append("type", assetType);
+    if (assetType && assetType !== "all") params.append("type", assetType);
     navigate(`/browse?${params.toString()}`);
   };
 
   // Reset all filters
   const resetFilters = () => {
     setSearchQuery("");
-    setAssetType("");
+    setAssetType("all");
     setPriceRange([0, 5000]);
     setCategories([]);
     setSortBy("newest");
@@ -179,7 +182,7 @@ const Browse = () => {
                       <SelectValue placeholder="All Assets" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Assets</SelectItem>
+                      <SelectItem value="all">All Assets</SelectItem>
                       <SelectItem value="photo">Photos</SelectItem>
                       <SelectItem value="video">Videos</SelectItem>
                       <SelectItem value="vector">Vectors</SelectItem>
@@ -244,6 +247,19 @@ const Browse = () => {
                     <div className="space-y-2">
                       <h3 className="font-medium">Asset Type</h3>
                       <div className="grid grid-cols-2 gap-2">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="type-all"
+                            checked={assetType === "all" || assetType === ""}
+                            onCheckedChange={() => setAssetType("all")}
+                          />
+                          <Label
+                            htmlFor="type-all"
+                            className="capitalize"
+                          >
+                            All
+                          </Label>
+                        </div>
                         {["photo", "video", "vector", "illustration", "music"].map(
                           (type) => (
                             <div key={type} className="flex items-center space-x-2">
@@ -251,7 +267,7 @@ const Browse = () => {
                                 id={`type-${type}`}
                                 checked={assetType === type}
                                 onCheckedChange={() =>
-                                  setAssetType(assetType === type ? "" : type)
+                                  setAssetType(assetType === type ? "all" : type)
                                 }
                               />
                               <Label
@@ -357,10 +373,10 @@ const Browse = () => {
                 </div>
 
                 {/* Active filters */}
-                {(assetType || categories.length > 0 || searchQuery) && (
+                {((assetType && assetType !== "all") || categories.length > 0 || searchQuery) && (
                   <div className="flex flex-wrap gap-2 mb-6">
-                    {assetType && (
-                      <Badge type={assetType} onRemove={() => setAssetType("")} />
+                    {assetType && assetType !== "all" && (
+                      <Badge type={assetType} onRemove={() => setAssetType("all")} />
                     )}
                     {categories.map((category) => (
                       <Badge
