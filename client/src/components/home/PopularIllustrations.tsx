@@ -4,12 +4,27 @@ import { popularIllustrations } from "@/lib/sample-data";
 import { useQuery } from "@tanstack/react-query";
 
 const PopularIllustrations = () => {
-  const { data: illustrations, isLoading } = useQuery({
-    queryKey: ["/api/assets", { type: ["illustration", "vector"], limit: 6 }],
-    queryFn: () => fetch("/api/assets?type=illustration,vector&limit=6").then(res => res.json()),
-    placeholderData: popularIllustrations, // Use sample data until API returns
+  // Fetch only illustrations first
+  const { data: illustrationsData, isLoading: illustrationsLoading } = useQuery({
+    queryKey: ["/api/assets", { type: "illustration", limit: 6 }],
+    queryFn: () => fetch("/api/assets?type=illustration&limit=6").then(res => res.json()),
     staleTime: 60000, // 1 minute
   });
+  
+  // Fetch vectors separately
+  const { data: vectorsData, isLoading: vectorsLoading } = useQuery({
+    queryKey: ["/api/assets", { type: "vector", limit: 6 }],
+    queryFn: () => fetch("/api/assets?type=vector&limit=6").then(res => res.json()),
+    staleTime: 60000, // 1 minute
+  });
+  
+  // Combine the results and limit to 6 total items
+  const illustrations = 
+    illustrationsData && vectorsData 
+      ? [...(illustrationsData || []), ...(vectorsData || [])].slice(0, 6)
+      : (illustrationsData || vectorsData || popularIllustrations);
+  
+  const isLoading = illustrationsLoading || vectorsLoading;
 
   return (
     <section className="py-12 bg-white">
