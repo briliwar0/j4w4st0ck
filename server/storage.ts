@@ -4,6 +4,8 @@ import {
   purchases, type Purchase, type InsertPurchase,
   cartItems, type CartItem, type InsertCartItem
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, or, like } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -225,4 +227,199 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users);
+  }
+
+  async updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set(userData)
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser;
+  }
+
+  // Asset methods
+  async getAsset(id: number): Promise<Asset | undefined> {
+    const [asset] = await db.select().from(assets).where(eq(assets.id, id));
+    return asset;
+  }
+
+  async getAssetsByAuthor(authorId: number): Promise<Asset[]> {
+    return await db.select().from(assets).where(eq(assets.authorId, authorId));
+  }
+
+  async getAssetsByStatus(status: 'pending' | 'approved' | 'rejected'): Promise<Asset[]> {
+    return await db.select().from(assets).where(eq(assets.status, status));
+  }
+
+  async createAsset(insertAsset: InsertAsset): Promise<Asset> {
+    const [asset] = await db
+      .insert(assets)
+      .values(insertAsset)
+      .returning();
+    return asset;
+  }
+
+  async updateAssetStatus(id: number, status: 'pending' | 'approved' | 'rejected'): Promise<Asset | undefined> {
+    const [updatedAsset] = await db
+      .update(assets)
+      .set({ status })
+      .where(eq(assets.id, id))
+      .returning();
+    return updatedAsset;
+  }
+
+  async searchAssets(query: string, type?: string, categories?: string[]): Promise<Asset[]> {
+    const lowerCaseQuery = query.toLowerCase();
+    
+    let baseQuery = db
+      .select()
+      .from(assets)
+      .where(eq(assets.status, 'approved'));
+      
+    if (type) {
+      baseQuery = baseQuery.where(eq(assets.type, type));
+    }
+    
+    const results = await baseQuery;
+    
+    // Filter client-side for complex conditions like searching in arrays
+    return results.filter(asset => {
+      // Text search in title and description
+      const matchesText = 
+        asset.title.toLowerCase().includes(lowerCaseQuery) ||
+        (asset.description && asset.description.toLowerCase().includes(lowerCaseQuery));
+      
+      // Search in tags array
+      const matchesTags = asset.tags && 
+        asset.tags.some(tag => tag.toLowerCase().includes(lowerCaseQuery));
+      
+      // Category filter
+      const matchesCategories = !categories?.length || 
+        (asset.categories && asset.categories.some(cat => categories.includes(cat)));
+      
+      return (matchesText || matchesTags) && matchesCategories;
+    });
+  }
+
+  async getApprovedAssets(type?: string, limit?: number): Promise<Asset[]> {
+    let query = db
+      .select()
+      .from(assets)
+      .where(eq(assets.status, 'approved'))
+      .orderBy(assets.createdAt);
+    
+    if (type) {
+      query = query.where(eq(assets.type, type));
+    }
+    
+    if (limit) {
+      query = query.limit(limit);
+    }
+    
+    return await query;
+  }
+
+  // Purchase methods
+  async createPurchase(insertPurchase: InsertPurchase): Promise<Purchase> {
+    const [purchase] = await db
+      .insert(purchases)
+      .values(insertPurchase)
+      .returning();
+    return purchase;
+  }
+
+  async getPurchasesByUser(userId: number): Promise<Purchase[]> {
+    return await db
+      .select()
+      .from(purchases)
+      .where(eq(purchases.userId, userId));
+  }
+
+  // Cart methods
+  async addToCart(insertCartItem: InsertCartItem): Promise<CartItem> {
+    const [cartItem] = await db
+      .insert(cartItems)
+      .values(insertCartItem)
+      .returning();
+    return cartItem;
+  }
+
+  async getCartItems(userId: number): Promise<CartItem[]> {
+    return await db
+      .select()
+      .from(cartItems)
+      .where(eq(cartItems.userId, userId));
+  }
+
+  async removeFromCart(id: number): Promise<boolean> {
+    const result = await db
+      .delete(cartItems)
+      .where(eq(cartItems.id, id));
+    return true; // Assuming success if no error is thrown
+  }
+
+  async clearCart(userId: number): Promise<boolean> {
+    await db
+      .delete(cartItems)
+      .where(eq(cartItems.userId, userId));
+    return true; // Assuming success if no error is thrown
+  }
+}
+
+// Initialize database with admin user
+const initializeDatabase = async () => {
+  const storage = new DatabaseStorage();
+  
+  // Check if admin exists
+  const admin = await storage.getUserByEmail("admin@jawastock.com");
+  
+  if (!admin) {
+    await storage.createUser({
+      username: "admin",
+      email: "admin@jawastock.com",
+      password: "adminpassword", // In a real app, this would be hashed
+      role: "admin",
+      firstName: "Admin",
+      lastName: "User",
+    });
+    console.log("Admin user created in database");
+  }
+  
+  return storage;
+};
+
+// Export the storage instance
+export const storage = new DatabaseStorage();
+
+// Initialize database (but don't block startup)
+initializeDatabase().catch(err => {
+  console.error("Error initializing database:", err);
+});

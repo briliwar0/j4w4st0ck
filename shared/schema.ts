@@ -1,5 +1,6 @@
-import { pgTable, text, serial, integer, boolean, jsonb, timestamp, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, jsonb, timestamp, pgEnum, foreignKey } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { relations } from "drizzle-orm";
 import { z } from "zod";
 
 // Enums
@@ -36,7 +37,7 @@ export const assets = pgTable("assets", {
   url: text("url").notNull(),
   thumbnailUrl: text("thumbnail_url").notNull(),
   price: integer("price").notNull(), // Price in cents
-  authorId: integer("author_id").notNull(),
+  authorId: integer("author_id").notNull().references(() => users.id),
   status: assetStatusEnum("status").notNull().default('pending'),
   tags: text("tags").array(),
   categories: text("categories").array(),
@@ -56,8 +57,8 @@ export const insertAssetSchema = createInsertSchema(assets).omit({
 // Purchases table
 export const purchases = pgTable("purchases", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
-  assetId: integer("asset_id").notNull(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  assetId: integer("asset_id").notNull().references(() => assets.id),
   price: integer("price").notNull(), // Price in cents
   licenseType: licenseTypeEnum("license_type").notNull(),
   downloadUrl: text("download_url").notNull(),
@@ -73,8 +74,8 @@ export const insertPurchaseSchema = createInsertSchema(purchases).omit({
 // Cart items table
 export const cartItems = pgTable("cart_items", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
-  assetId: integer("asset_id").notNull(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  assetId: integer("asset_id").notNull().references(() => assets.id),
   licenseType: licenseTypeEnum("license_type").notNull().default('standard'),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
