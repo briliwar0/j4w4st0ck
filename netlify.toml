@@ -1,7 +1,7 @@
 # Netlify configuration for JawaStock
 
 [build]
-  command = "npm run build"
+  command = "node netlify-build.mjs"
   publish = "dist"
   functions = "functions-build"
 
@@ -9,6 +9,7 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_VERSION = "9"
+  NODE_ENV = "development"
 
 # Handle SPA routing
 [[redirects]]

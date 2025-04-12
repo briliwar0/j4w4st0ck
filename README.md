@@ -151,6 +151,21 @@ Jika Anda mengalami masalah dengan deployment Netlify:
 3. Periksa apakah database PostgreSQL dapat diakses dari Netlify Functions
 4. Jika mengalami masalah dengan modul native seperti `sharp`, pastikan telah menambahkan ke `external_node_modules` di `netlify.toml`
 
+**Kesalahan Umum dan Solusinya:**
+
+1. **Error: "vite not found"**
+   - Solusi: Pastikan NODE_ENV=development di environment variables atau gunakan `npm install --include=dev` dalam build command
+
+2. **Error: Module not found: Can't resolve [package]**
+   - Solusi: Pindahkan package dari devDependencies ke dependencies di package.json
+
+3. **Error: Function invocation timed out**
+   - Solusi: Tambahkan `timeout = 30` di konfigurasi fungsi di netlify.toml
+
+4. **Error: Failed to connect to database**
+   - Solusi: Pastikan alamat database dapat diakses dari luar dan kredensial benar
+   - Gunakan database yang mendukung koneksi dari serverless functions (Neon, Supabase, Railway)
+
 ## Project Structure
 
 ```
