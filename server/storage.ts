@@ -547,7 +547,8 @@ const initializeDatabase = async () => {
 };
 
 // Export the storage instance
-export const storage = new DatabaseStorage();
+// Use MemStorage for development with sample data
+export const storage = new MemStorage();
 
 // Initialize database (but don't block startup)
 initializeDatabase().catch(err => {
