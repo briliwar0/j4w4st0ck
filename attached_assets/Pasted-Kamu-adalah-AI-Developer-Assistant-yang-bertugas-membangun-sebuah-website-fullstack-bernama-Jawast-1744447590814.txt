@@ -1,0 +1,49 @@
+Kamu adalah AI Developer Assistant yang bertugas membangun sebuah website fullstack bernama **Jawastock**, platform mirip Shutterstock.com.
+
+### 🎯 Tujuan Website:
+Marketplace digital untuk jual beli gambar dan video. Ada sistem kontributor, sistem pembayaran, dan download dengan lisensi.
+
+### 🔑 Fitur Wajib:
+1. Halaman Home: Tampilkan asset trending, terbaru.
+2. Pencarian & Filter: Berdasarkan kategori, harga, lisensi, dan sorting.
+3. Sistem User:
+   - Register/Login (biasa + Google OAuth)
+   - Role: user biasa dan kontributor
+   - Dashboard user: riwayat pembelian, profil, langganan
+4. Kontributor:
+   - Upload asset, preview otomatis, watermark otomatis
+   - Status: pending, approved, rejected
+5. Preview & Pembelian:
+   - Media dengan watermark
+   - Checkout (gunakan PayPal atau Stripe)
+   - Download aktif setelah bayar
+   - Lisensi otomatis (PDF/email)
+6. Admin Panel:
+   - Lihat user, transaksi, statistik
+   - Approve/reject konten
+7. SEO & Performance:
+   - Meta tags, OpenGraph, Sitemap, robots.txt
+   - Lazy load, CDN, dan SSR/SSG
+
+### 🛠️ Teknologi yang Digunakan:
+- **Frontend**: Next.js + TypeScript, TailwindCSS, ShadcnUI, Framer Motion
+- **Backend**: API Routes (Next.js) / Express.js, PostgreSQL + Drizzle ORM / Prisma
+- **Auth**: JWT + OAuth (Google)
+- **Storage**: Cloudinary / S3
+- **Image Processing**: Sharp
+- **Pembayaran**: PayPal (utama), Stripe (opsional)
+- **Deploy**: Netlify (frontend), Railway / Render / VPS (backend)
+- **SEO**: SSR + sitemap + robots.txt
+
+### 🧠 Tugas AI Agent:
+- Setup project fullstack lengkap.
+- Buat komponen halaman: Home, Login, Register, Upload, Detail media, Checkout.
+- Setup routing dan auth.
+- Simpan file di Cloudinary, watermark dengan Sharp.
+- Implementasi pembayaran PayPal (sandbox).
+- Simpan data di PostgreSQL via ORM.
+- Tambahkan dummy data dan testing otomatis.
+- Optimalkan untuk SEO.
+- Teruskan development sampai aplikasi siap digunakan dan terdeploy otomatis via GitHub dan Netlify.
+
+Tulis kode modular, terstruktur, dan jelas. Buatkan instruksi setup, environment, dan deployment juga.

@@ -10,6 +10,10 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import 'express-session';
+import { upload, optimizeImage, generateThumbnail, cleanupTempFiles } from "./upload";
+import { uploadImageWithWatermark, uploadVideoWithWatermark, generateSignedUrl } from "./cloudinary";
+import path from "path";
+import fs from "fs";
 
 // Extend Express Request type to include session
 declare module 'express-session' {
@@ -322,6 +326,143 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(purchases);
   });
   
+  // File upload routes
+  apiRouter.post('/upload', isContributorOrAdmin, upload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+      
+      // Get asset type and metadata from the form
+      const { type, title, description, price, categories, keywords, licenseType } = req.body;
+      
+      if (!type || !title || !price) {
+        return res.status(400).json({ 
+          message: "Missing required fields: type, title, and price are required" 
+        });
+      }
+      
+      // Optimize image or video based on asset type
+      let uploadResult;
+      let fileSize = fs.statSync(req.file.path).size;
+      const filePath = req.file.path;
+      
+      // Process different media types
+      if (['photo', 'illustration', 'vector'].includes(type)) {
+        // For images, optimize and add watermark
+        const optimizedPath = await optimizeImage(filePath);
+        const thumbnailPath = await generateThumbnail(filePath);
+        
+        uploadResult = await uploadImageWithWatermark(optimizedPath, type as 'photo' | 'illustration' | 'vector');
+        
+        // Clean up temporary files
+        cleanupTempFiles(filePath, optimizedPath, thumbnailPath);
+      } else if (type === 'video') {
+        // For videos, upload with watermark
+        uploadResult = await uploadVideoWithWatermark(filePath);
+        
+        // Clean up temporary file
+        cleanupTempFiles(filePath);
+      } else if (type === 'music') {
+        // For audio files, simply upload to Cloudinary
+        const result = await cloudinary.v2.uploader.upload(filePath, {
+          resource_type: 'auto',
+          folder: 'jawastock/audio',
+          use_filename: true,
+          tags: ['music', 'audio']
+        });
+        
+        uploadResult = {
+          watermarked: {
+            url: result.secure_url,
+            publicId: result.public_id,
+          },
+          original: {
+            url: result.secure_url,
+            publicId: result.public_id
+          },
+          format: result.format,
+          duration: result.duration,
+          resourceType: 'audio'
+        };
+        
+        // Clean up temporary file
+        cleanupTempFiles(filePath);
+      } else {
+        // Unsupported asset type
+        cleanupTempFiles(filePath);
+        return res.status(400).json({ message: "Unsupported asset type" });
+      }
+      
+      // Create asset record in database
+      const newAsset = await storage.createAsset({
+        title,
+        description: description || null,
+        type,
+        url: uploadResult.watermarked.url,
+        thumbnailUrl: uploadResult.watermarked.url, // We'll use the same URL for now
+        originalUrl: uploadResult.original.url,
+        price: Number(price),
+        authorId: req.session.userId!,
+        publicId: uploadResult.watermarked.publicId,
+        originalPublicId: uploadResult.original.publicId,
+        status: 'pending', // New uploads are pending by default
+        width: uploadResult.width,
+        height: uploadResult.height,
+        fileSize,
+        format: uploadResult.format,
+        categories: categories ? JSON.parse(categories) : [],
+        keywords: keywords ? JSON.parse(keywords) : [],
+        licenseType: licenseType || 'standard'
+      });
+      
+      res.status(201).json(newAsset);
+    } catch (error: any) {
+      console.error("Error uploading file:", error);
+      res.status(500).json({ 
+        message: "Error uploading file", 
+        error: error.message 
+      });
+    }
+  });
+  
+  // Route to get a signed URL for a purchased asset
+  apiRouter.get('/assets/:id/download', isAuthenticated, async (req, res) => {
+    const assetId = parseInt(req.params.id);
+    if (isNaN(assetId)) {
+      return res.status(400).json({ message: "Invalid asset ID" });
+    }
+    
+    // Check if the user has purchased this asset
+    const userId = req.session.userId!;
+    const purchases = await storage.getPurchasesByUser(userId);
+    const hasPurchased = purchases.some(purchase => purchase.assetId === assetId);
+    
+    if (!hasPurchased) {
+      return res.status(403).json({ message: "You need to purchase this asset first" });
+    }
+    
+    // Generate a signed URL that expires in 24 hours
+    const asset = await storage.getAsset(assetId);
+    if (!asset) {
+      return res.status(404).json({ message: "Asset not found" });
+    }
+    
+    const expiryDate = new Date();
+    expiryDate.setTime(expiryDate.getTime() + 24 * 60 * 60 * 1000); // 24 hours
+    
+    try {
+      const signedUrl = await generateSignedUrl(asset.originalPublicId, expiryDate);
+      res.json({ downloadUrl: signedUrl, expiresAt: expiryDate });
+    } catch (error: any) {
+      console.error("Error generating signed URL:", error);
+      res.status(500).json({ 
+        message: "Error generating download URL", 
+        error: error.message 
+      });
+    }
+  });
+  
   // Stripe payment routes
   apiRouter.post('/create-payment-intent', isAuthenticated, async (req, res) => {
     try {
@@ -349,6 +490,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Stripe payment intent error:", error);
       res.status(500).json({ 
         message: "Error creating payment intent", 
+        error: error.message 
+      });
+    }
+  });
+  
+  // Route to complete a purchase after payment
+  apiRouter.post('/complete-purchase', isAuthenticated, async (req, res) => {
+    try {
+      const { cartItems, paymentIntentId } = req.body;
+      
+      if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
+        return res.status(400).json({ message: "Cart items are required" });
+      }
+      
+      // Verify payment with Stripe
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      
+      if (paymentIntent.status !== 'succeeded') {
+        return res.status(400).json({ message: "Payment has not been completed" });
+      }
+      
+      // Create purchase records for each cart item
+      const purchases = [];
+      for (const item of cartItems) {
+        const purchase = await storage.createPurchase({
+          userId: req.session.userId!,
+          assetId: item.assetId,
+          price: item.price,
+          licenseType: item.licenseType,
+          downloadUrl: '', // Will be generated when needed
+          expiryDate: null // No expiry for now
+        });
+        purchases.push(purchase);
+      }
+      
+      // Clear the user's cart
+      await storage.clearCart(req.session.userId!);
+      
+      res.status(201).json({
+        success: true,
+        message: "Purchase completed successfully",
+        purchases
+      });
+    } catch (error: any) {
+      console.error("Error completing purchase:", error);
+      res.status(500).json({ 
+        message: "Error completing purchase", 
         error: error.message 
       });
     }

@@ -34,18 +34,23 @@ export const assets = pgTable("assets", {
   title: text("title").notNull(),
   description: text("description"),
   type: assetTypeEnum("type").notNull(),
-  url: text("url").notNull(),
+  url: text("url").notNull(), // URL with watermark
   thumbnailUrl: text("thumbnail_url").notNull(),
+  originalUrl: text("original_url"), // Original URL without watermark (for purchased assets)
   price: integer("price").notNull(), // Price in cents
   authorId: integer("author_id").notNull().references(() => users.id),
   status: assetStatusEnum("status").notNull().default('pending'),
   tags: text("tags").array(),
   categories: text("categories").array(),
+  keywords: text("keywords").array(),
   licenseType: licenseTypeEnum("license_type").notNull().default('standard'),
   width: integer("width"),
   height: integer("height"),
   duration: integer("duration"), // For videos, in seconds
   fileSize: integer("file_size"), // In bytes
+  format: text("format"), // File format (jpg, png, mp4, etc.)
+  publicId: text("public_id"), // Cloudinary public ID for watermarked version
+  originalPublicId: text("original_public_id"), // Cloudinary public ID for original version
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
