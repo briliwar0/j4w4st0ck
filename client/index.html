@@ -17,7 +17,26 @@
   <body>
     <div id="root"></div>
     <script type="module" src="./src/main.tsx"></script>
-    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
-    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" async></script>
+    
+    <!-- Error logging for deployment debugging -->
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        console.error('Global error:', message, 'at', source, lineno, colno);
+        const errorElement = document.createElement('div');
+        errorElement.style.padding = '20px';
+        errorElement.style.margin = '20px';
+        errorElement.style.backgroundColor = '#ffeeee';
+        errorElement.style.border = '1px solid #ff0000';
+        errorElement.style.borderRadius = '4px';
+        errorElement.style.display = document.getElementById('root').childNodes.length ? 'none' : 'block';
+        errorElement.innerHTML = `
+          <h3>JawaStock is experiencing an issue:</h3>
+          <p>${message}</p>
+          <p>Please refresh the page or try again later.</p>
+        `;
+        document.body.appendChild(errorElement);
+        return true;
+      };
+    </script>
   </body>
 </html>

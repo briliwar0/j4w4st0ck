@@ -11,18 +11,16 @@
   NPM_VERSION = "9"
   NODE_ENV = "development"
 
-# Handle SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  # Exclude API routes from SPA redirect
-  conditions = {Path = ["!/api/*"]}
-
 # Handle API routes with Netlify functions
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
+  status = 200
+
+# Handle route fallbacks for SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
 
 # Set security headers

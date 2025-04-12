@@ -28,9 +28,39 @@ if (fs.existsSync(indexPath)) {
   indexHtml = indexHtml.replace(/src="\/assets\//g, 'src="./assets/');
   indexHtml = indexHtml.replace(/href="\/assets\//g, 'href="./assets/');
   
+  // Perbaiki script import path
+  indexHtml = indexHtml.replace(/src="[^"]*\/main\.[^"]*"/g, (match) => {
+    const scriptPath = match.match(/src="([^"]*)"/)[1];
+    const fileName = scriptPath.split('/').pop();
+    return `src="./assets/${fileName}"`;
+  });
+  
   // Pastikan base href tersedia
   if (!indexHtml.includes('<base href="/">')) {
     indexHtml = indexHtml.replace('<head>', '<head>\n    <base href="/">');
+  }
+  
+  // Tambahkan fallback script untuk menangani error loading
+  if (!indexHtml.includes('window.onerror')) {
+    const fallbackScript = `
+    <script>
+      window.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('root') && !document.getElementById('root').childNodes.length) {
+          setTimeout(function() {
+            if (!document.getElementById('root').childNodes.length) {
+              console.error('App failed to mount in time. Showing fallback message.');
+              const fallbackElement = document.createElement('div');
+              fallbackElement.style.padding = '20px';
+              fallbackElement.style.margin = '20px';
+              fallbackElement.style.textAlign = 'center';
+              fallbackElement.innerHTML = '<h2>JawaStock</h2><p>Loading application...</p>';
+              document.getElementById('root').appendChild(fallbackElement);
+            }
+          }, 5000);
+        }
+      });
+    </script>`;
+    indexHtml = indexHtml.replace('</head>', fallbackScript + '</head>');
   }
   
   fs.writeFileSync(indexPath, indexHtml);
