@@ -1,0 +1,16 @@
+[build]
+command = "sh ./build.sh"
+publish = "dist"
+
+[build.environment]
+NODE_VERSION = "20"
+
+[site]
+bucket = "./dist"
+entry-point = "./functions"
+
+[env.production]
+name = "production"
+
+[env.staging]
+name = "staging"

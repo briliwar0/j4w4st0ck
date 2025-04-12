@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": ["/api/*"],
+  "routes": [
+    {
+      "src": "/api/.*",
+      "dest": "/api/$1",
+      "continue": true
+    },
+    {
+      "src": "^/assets/.*",
+      "dest": "/assets/$1",
+      "continue": true
+    },
+    {
+      "src": "^/.*",
+      "dest": "/index.html"
+    }
+  ]
+}
