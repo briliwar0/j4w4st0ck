@@ -67,6 +67,122 @@ export class MemStorage implements IStorage {
       firstName: "Admin",
       lastName: "User",
     });
+    
+    // Add sample contributor user
+    const contributor = this.createUser({
+      username: "contributor",
+      email: "contributor@jawastock.com",
+      password: "password",
+      role: "contributor",
+      firstName: "Sample",
+      lastName: "Contributor",
+    });
+    
+    // Add sample assets
+    this.createAsset({
+      title: "Beautiful Mountain Landscape",
+      description: "A stunning view of mountains at sunset",
+      type: "photo",
+      url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3",
+      thumbnailUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=400",
+      originalUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3",
+      price: 1500,
+      authorId: contributor.id,
+      publicId: "jawastock/mountains",
+      originalPublicId: "jawastock/originals/mountains",
+      status: "approved",
+      width: 1920,
+      height: 1080,
+      fileSize: 2540000,
+      format: "jpg",
+      categories: ["nature", "landscape"],
+      keywords: ["mountain", "sunset", "landscape", "nature"],
+      licenseType: "standard"
+    });
+    
+    this.createAsset({
+      title: "Business Team Meeting",
+      description: "Professional team having a discussion in modern office",
+      type: "photo",
+      url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3",
+      thumbnailUrl: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&w=400",
+      originalUrl: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3",
+      price: 2000,
+      authorId: contributor.id,
+      publicId: "jawastock/business-meeting",
+      originalPublicId: "jawastock/originals/business-meeting",
+      status: "approved",
+      width: 1920, 
+      height: 1080,
+      fileSize: 3240000,
+      format: "jpg",
+      categories: ["business", "people"],
+      keywords: ["business", "meeting", "office", "team", "professional"],
+      licenseType: "standard"
+    });
+    
+    this.createAsset({
+      title: "Digital Marketing Icons",
+      description: "Vector set of digital marketing and SEO icons",
+      type: "vector",
+      url: "https://img.freepik.com/free-vector/gradient-ui-ux-elements-collection_23-2149057910.jpg",
+      thumbnailUrl: "https://img.freepik.com/free-vector/gradient-ui-ux-elements-collection_23-2149057910.jpg?w=400",
+      originalUrl: "https://img.freepik.com/free-vector/gradient-ui-ux-elements-collection_23-2149057910.jpg",
+      price: 1800,
+      authorId: contributor.id,
+      publicId: "jawastock/marketing-icons",
+      originalPublicId: "jawastock/originals/marketing-icons",
+      status: "approved",
+      width: 1600,
+      height: 1600,
+      fileSize: 1450000,
+      format: "svg",
+      categories: ["business", "icons"],
+      keywords: ["digital", "marketing", "icons", "vector", "SEO"],
+      licenseType: "standard"
+    });
+    
+    this.createAsset({
+      title: "Abstract Background",
+      description: "Colorful abstract background with geometric shapes",
+      type: "illustration",
+      url: "https://img.freepik.com/free-vector/abstract-watercolor-pastel-background_87374-139.jpg",
+      thumbnailUrl: "https://img.freepik.com/free-vector/abstract-watercolor-pastel-background_87374-139.jpg?w=400",
+      originalUrl: "https://img.freepik.com/free-vector/abstract-watercolor-pastel-background_87374-139.jpg",
+      price: 1200,
+      authorId: contributor.id,
+      publicId: "jawastock/abstract-bg",
+      originalPublicId: "jawastock/originals/abstract-bg",
+      status: "approved",
+      width: 2000,
+      height: 2000,
+      fileSize: 2120000,
+      format: "jpg",
+      categories: ["backgrounds"],
+      keywords: ["abstract", "background", "colorful", "geometric"],
+      licenseType: "standard"
+    });
+    
+    this.createAsset({
+      title: "Corporate Introduction Video",
+      description: "Professional corporate introduction animation",
+      type: "video",
+      url: "https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c0fd273d2c6d9a064f3ae35579b2bbdf&profile_id=139&oauth2_token_id=57447761",
+      thumbnailUrl: "https://images.pexels.com/videos/3045163/free-video-3045163.jpg?auto=compress&cs=tinysrgb&dpr=1&w=400",
+      originalUrl: "https://player.vimeo.com/external/371433846.hd.mp4?s=236da2f3c0fd273d2c6d9a064f3ae35579b2bbdf&profile_id=175&oauth2_token_id=57447761",
+      price: 5000,
+      authorId: contributor.id,
+      publicId: "jawastock/corporate-video",
+      originalPublicId: "jawastock/originals/corporate-video",
+      status: "approved",
+      width: 1920,
+      height: 1080,
+      fileSize: 15240000,
+      format: "mp4",
+      categories: ["business", "video"],
+      keywords: ["corporate", "introduction", "animation", "business"],
+      licenseType: "premium"
+    });
   }
 
   // User methods
