@@ -176,18 +176,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { query, type, categories } = req.query;
     const categoryArray = categories ? (Array.isArray(categories) ? categories : [categories as string]) : undefined;
     
-    if (query) {
-      const assets = await storage.searchAssets(
-        query as string,
-        type as string | undefined,
-        categoryArray
-      );
-      return res.json(assets);
+    // Validate type parameter - it must be one of the allowed asset types
+    let validatedType: string | undefined = undefined;
+    if (type) {
+      // If it's a single valid type, use it directly
+      if (['photo', 'video', 'vector', 'illustration', 'music'].includes(type as string)) {
+        validatedType = type as string;
+      } else {
+        // If we get here, the type parameter is not valid
+        return res.status(400).json({ 
+          message: "Invalid asset type. Must be one of: photo, video, vector, illustration, music" 
+        });
+      }
     }
     
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
-    const assets = await storage.getApprovedAssets(type as string | undefined, limit);
-    res.json(assets);
+    try {
+      if (query) {
+        const assets = await storage.searchAssets(
+          query as string,
+          validatedType,
+          categoryArray
+        );
+        return res.json(assets);
+      }
+      
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+      const assets = await storage.getApprovedAssets(validatedType, limit);
+      res.json(assets);
+    } catch (error) {
+      console.error("Error fetching assets:", error);
+      res.status(500).json({ message: "Error fetching assets" });
+    }
   });
   
   apiRouter.get('/assets/:id', async (req, res) => {

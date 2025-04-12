@@ -299,19 +299,22 @@ export class DatabaseStorage implements IStorage {
   async searchAssets(query: string, type?: string, categories?: string[]): Promise<Asset[]> {
     const lowerCaseQuery = query.toLowerCase();
     
-    let baseQuery = db
+    // Get all approved assets first
+    const baseQuery = db
       .select()
       .from(assets)
       .where(eq(assets.status, 'approved'));
+    
+    // Execute the basic query
+    const approvedAssets = await baseQuery;
+    
+    // Apply filters in memory
+    return approvedAssets.filter(asset => {
+      // Type filter
+      if (type && asset.type !== type) {
+        return false;
+      }
       
-    if (type) {
-      baseQuery = baseQuery.where(eq(assets.type, type));
-    }
-    
-    const results = await baseQuery;
-    
-    // Filter client-side for complex conditions like searching in arrays
-    return results.filter(asset => {
       // Text search in title and description
       const matchesText = 
         asset.title.toLowerCase().includes(lowerCaseQuery) ||
@@ -323,28 +326,39 @@ export class DatabaseStorage implements IStorage {
       
       // Category filter
       const matchesCategories = !categories?.length || 
-        (asset.categories && asset.categories.some(cat => categories.includes(cat)));
+        (asset.categories && asset.categories.some(cat => 
+          typeof cat === 'string' && categories.includes(cat)
+        ));
       
       return (matchesText || matchesTags) && matchesCategories;
     });
   }
 
   async getApprovedAssets(type?: string, limit?: number): Promise<Asset[]> {
-    let query = db
+    let baseQuery = db
       .select()
       .from(assets)
-      .where(eq(assets.status, 'approved'))
-      .orderBy(assets.createdAt);
+      .where(eq(assets.status, 'approved'));
     
+    // Execute the base query first to get all approved assets
+    let results = await baseQuery;
+    
+    // If type is specified, filter the results in memory
     if (type) {
-      query = query.where(eq(assets.type, type));
+      results = results.filter(asset => asset.type === type);
     }
     
-    if (limit) {
-      query = query.limit(limit);
+    // Sort by created date (newest first)
+    results.sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+    
+    // Apply limit if specified
+    if (limit && limit > 0) {
+      results = results.slice(0, limit);
     }
     
-    return await query;
+    return results;
   }
 
   // Purchase methods
