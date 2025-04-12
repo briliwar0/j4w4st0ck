@@ -334,14 +334,34 @@ const AuthModal = ({ isOpen, onClose, initialView = "login" }: AuthModalProps) =
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="terms" {...registerForm.register("terms")} />
-                  <Label htmlFor="terms" className="text-sm font-normal">
+                  <Checkbox 
+                    id="terms" 
+                    checked={registerForm.watch("terms")} 
+                    onCheckedChange={(checked) => {
+                      registerForm.setValue("terms", checked === true, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                    }}
+                  />
+                  <Label 
+                    htmlFor="terms" 
+                    className="text-sm font-normal"
+                    onClick={() => {
+                      // Toggle the checkbox value when the label is clicked
+                      const currentValue = registerForm.getValues("terms");
+                      registerForm.setValue("terms", !currentValue, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                    }}
+                  >
                     I agree to the{" "}
-                    <a href="#" className="text-primary hover:underline">
+                    <a href="#" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
                       Terms of Service
                     </a>{" "}
                     and{" "}
-                    <a href="#" className="text-primary hover:underline">
+                    <a href="#" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
                       Privacy Policy
                     </a>
                   </Label>
