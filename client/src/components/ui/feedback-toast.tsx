@@ -89,13 +89,15 @@ export function feedbackToast({
     title: title,
     description: (
       <div className="flex w-full flex-col space-y-1">
-        <p className={cn(messageVariants({ variant }))}>{message}</p>
+        <span className={cn(messageVariants({ variant }), "flex items-center gap-2")}>
+          {getIcon(variant)}
+          {message}
+        </span>
         {action && <div className="mt-2">{action}</div>}
       </div>
     ),
     duration: duration,
     className: cn(feedbackVariants({ variant })),
-    icon: getIcon(variant),
   });
 }
 

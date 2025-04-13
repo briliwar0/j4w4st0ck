@@ -1,17 +1,26 @@
 import { Helmet } from "react-helmet";
-import { Link } from "wouter";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { AlertTriangle } from "lucide-react";
 import { useEffect, useState } from "react";
+import InteractiveErrorVisual from "@/components/error/InteractiveErrorVisual";
+import { toast } from "@/components/ui/feedback-toast";
 
 export default function ErrorInfo() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<number>(500);
   
   useEffect(() => {
     // Get error from URL params
     const params = new URLSearchParams(window.location.search);
     const error = params.get("message");
+    const code = params.get("code");
+    
+    if (code) {
+      try {
+        setErrorCode(parseInt(code));
+      } catch {
+        setErrorCode(500);
+      }
+    }
+    
     setErrorMessage(error || "An unknown error occurred");
     
     // Clear the error from session storage once displayed
@@ -20,47 +29,45 @@ export default function ErrorInfo() {
       setErrorMessage(storedError);
       sessionStorage.removeItem("jawastock_error");
     }
+    
+    // Show toast notification
+    toast.warning({
+      title: "Error Detected",
+      message: "We've detected an issue with the application and are showing you detailed information."
+    });
   }, []);
 
+  const createErrorObject = (): Error => {
+    const error = new Error(errorMessage || "Unknown error");
+    return error;
+  };
+
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50 p-4">
       <Helmet>
         <title>Error Information | JawaStock</title>
       </Helmet>
       
-      <Card className="w-full max-w-md mx-4">
-        <CardContent className="pt-6">
-          <div className="flex mb-4 gap-2 items-center">
-            <AlertTriangle className="h-8 w-8 text-amber-500" />
-            <h1 className="text-2xl font-bold text-gray-900">Application Error</h1>
-          </div>
-
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-md my-4">
-            <p className="text-sm text-gray-800">
-              {errorMessage}
-            </p>
-          </div>
-
-          <div className="mt-6">
-            <h2 className="text-lg font-medium mb-2">Troubleshooting Steps:</h2>
-            <ul className="list-disc pl-5 space-y-1 text-sm text-gray-600">
-              <li>Refresh the page and try again</li>
-              <li>Clear your browser cache and cookies</li>
-              <li>Try using a different browser</li>
-              <li>Check your internet connection</li>
-            </ul>
-          </div>
-        </CardContent>
+      <div className="w-full max-w-3xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">JawaStock Error Center</h1>
+          <p className="text-gray-600">
+            We've encountered an issue, but we're here to help you resolve it.
+          </p>
+        </div>
         
-        <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={() => window.location.reload()}>
-            Refresh Page
-          </Button>
-          <Button asChild>
-            <Link href="/">Return to Homepage</Link>
-          </Button>
-        </CardFooter>
-      </Card>
+        <InteractiveErrorVisual 
+          error={createErrorObject()} 
+          errorCode={errorCode}
+          showHomeLink={true}
+          resetErrorBoundary={() => window.location.reload()}
+        />
+        
+        <div className="mt-8 text-center text-sm text-gray-500">
+          <p>If this issue persists, please contact our support team.</p>
+          <p className="mt-2">Error Reference: {Date.now().toString(36).toUpperCase()}</p>
+        </div>
+      </div>
     </div>
   );
 }

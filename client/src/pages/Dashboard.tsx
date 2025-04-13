@@ -7,6 +7,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { formatPrice } from "@/lib/utils";
 import { allAssets } from "@/lib/sample-data";
+import { PerformanceMetrics } from "@/components/dashboard/PerformanceMetrics";
 
 import {
   Card,
