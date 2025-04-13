@@ -37,9 +37,12 @@ const FeaturedVideos = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {videos.map((video) => (
-              <VideoCard key={video.id} video={video} />
-            ))}
+            {Array.isArray(videos) && videos.length > 0 
+              ? videos.map((video) => (
+                  <VideoCard key={video.id} video={video} />
+                ))
+              : <div className="col-span-4 text-center py-8 text-gray-500">No featured videos available at the moment.</div>
+            }
           </div>
         )}
       </div>

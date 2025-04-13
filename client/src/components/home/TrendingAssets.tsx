@@ -37,9 +37,12 @@ const TrendingAssets = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {assets.map((asset) => (
-              <AssetCard key={asset.id} asset={asset} />
-            ))}
+            {Array.isArray(assets) && assets.length > 0 
+              ? assets.map((asset) => (
+                  <AssetCard key={asset.id} asset={asset} />
+                ))
+              : <div className="col-span-4 text-center py-8 text-gray-500">No trending assets available at the moment.</div>
+            }
           </div>
         )}
       </div>

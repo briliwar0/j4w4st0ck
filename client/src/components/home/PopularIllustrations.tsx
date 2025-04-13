@@ -57,9 +57,12 @@ const PopularIllustrations = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            {illustrations.map((illustration: any) => (
-              <IllustrationCard key={illustration.id} illustration={illustration} />
-            ))}
+            {Array.isArray(illustrations) && illustrations.length > 0 
+              ? illustrations.map((illustration: any) => (
+                  <IllustrationCard key={illustration.id} illustration={illustration} />
+                ))
+              : <div className="col-span-6 text-center py-8 text-gray-500">No popular illustrations available at the moment.</div>
+            }
           </div>
         )}
       </div>
