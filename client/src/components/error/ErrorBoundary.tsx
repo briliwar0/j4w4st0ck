@@ -1,93 +1,106 @@
-import React, { Component, ErrorInfo, ReactNode } from "react";
+import React, { Component, ErrorInfo, ReactNode, Suspense } from 'react';
+import InteractiveErrorVisual from './InteractiveErrorVisual';
+import { BrandedSpinner } from '@/components/ui/branded-spinner';
 
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
+  showHomeLink?: boolean;
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
 interface State {
   hasError: boolean;
   error: Error | null;
+  errorInfo: ErrorInfo | null;
 }
 
-// Helper function to navigate programmatically
-const redirectToErrorPage = (error: Error) => {
-  // Store error in session storage
-  sessionStorage.setItem("jawastock_error", error.message);
-  
-  // Navigate to error page
-  window.location.href = `/error-info?message=${encodeURIComponent(error.message)}`;
-};
+class ErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false,
+    error: null,
+    errorInfo: null
+  };
 
-class ErrorBoundaryClass extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      hasError: false,
-      error: null
-    };
+  public static getDerivedStateFromError(error: Error): State {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true, error, errorInfo: null };
   }
 
-  static getDerivedStateFromError(error: Error): State {
-    return {
-      hasError: true,
-      error
-    };
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Log the error
-    console.error("ErrorBoundary caught an error:", error, errorInfo);
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    console.error('Error caught by ErrorBoundary:', error, errorInfo);
     
-    // Only redirect for production builds
-    if (import.meta.env.PROD) {
-      redirectToErrorPage(error);
+    this.setState({ error, errorInfo });
+    
+    // Optional callback for logging or analytics
+    if (this.props.onError) {
+      this.props.onError(error, errorInfo);
+    }
+    
+    // Optionally log to server
+    if (process.env.NODE_ENV === 'production') {
+      try {
+        // Send error details to your logging service
+        fetch('/api/log-error', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            error: {
+              message: error.message,
+              stack: error.stack,
+            },
+            componentStack: errorInfo.componentStack,
+            url: window.location.href,
+            timestamp: new Date().toISOString(),
+          }),
+        }).catch(err => {
+          // Silent fail if error logging fails
+          console.warn('Failed to log error:', err);
+        });
+      } catch (e) {
+        // Do nothing if this fails
+      }
     }
   }
 
-  render(): ReactNode {
+  public reset = (): void => {
+    this.setState({
+      hasError: false,
+      error: null,
+      errorInfo: null,
+    });
+  };
+
+  public render(): ReactNode {
     if (this.state.hasError) {
-      // Fallback UI or use the provided fallback
-      return this.props.fallback || (
-        <div className="p-4 m-4 bg-red-50 border border-red-200 rounded-md">
-          <h2 className="text-lg font-medium text-red-800 mb-2">Something went wrong</h2>
-          <p className="text-sm text-red-600">
-            {this.state.error?.message || "An unknown error occurred"}
-          </p>
-          <button 
-            className="mt-3 px-4 py-2 bg-red-100 text-red-800 rounded-md hover:bg-red-200"
-            onClick={() => window.location.reload()}
-          >
-            Reload page
-          </button>
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
+      
+      return (
+        <div className="p-4">
+          <InteractiveErrorVisual 
+            error={this.state.error || new Error('Unknown error occurred')}
+            componentStack={this.state.errorInfo?.componentStack}
+            resetErrorBoundary={this.reset}
+            showHomeLink={this.props.showHomeLink}
+          />
         </div>
       );
     }
 
-    return this.props.children;
+    return (
+      <Suspense fallback={
+        <div className="flex justify-center items-center p-8 h-48">
+          <BrandedSpinner size="md" />
+        </div>
+      }>
+        {this.props.children}
+      </Suspense>
+    );
   }
 }
 
-// Wrapper with hook access
-export default function ErrorBoundary(props: Props): JSX.Element {
-  return <ErrorBoundaryClass {...props} />;
-}
-
-// Utility function to handle errors in async functions
-export function handleAsyncError(error: unknown, context = "operation"): never {
-  console.error(`Error during ${context}:`, error);
-  
-  const errorMessage = error instanceof Error 
-    ? error.message 
-    : "An unknown error occurred";
-    
-  // Store error in session storage
-  sessionStorage.setItem("jawastock_error", errorMessage);
-  
-  // In production, redirect to error page
-  if (import.meta.env.PROD) {
-    window.location.href = `/error-info?message=${encodeURIComponent(errorMessage)}`;
-  }
-  
-  throw error; // Re-throw for promise rejection handling
-}
+export default ErrorBoundary;

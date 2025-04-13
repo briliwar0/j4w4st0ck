@@ -23,11 +23,41 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/browse" component={Browse} />
-      <Route path="/assets/:id" component={AssetDetail} />
-      <Route path="/upload" component={Upload} />
-      <Route path="/dashboard" component={Dashboard} />
-      <Route path="/admin" component={AdminPanel} />
-      <Route path="/checkout" component={Checkout} />
+      <Route path="/assets/:id">
+        {(params) => (
+          <ErrorBoundary showHomeLink>
+            <AssetDetail id={params.id} />
+          </ErrorBoundary>
+        )}
+      </Route>
+      <Route path="/upload">
+        {() => (
+          <ErrorBoundary showHomeLink>
+            <Upload />
+          </ErrorBoundary>
+        )}
+      </Route>
+      <Route path="/dashboard">
+        {() => (
+          <ErrorBoundary showHomeLink>
+            <Dashboard />
+          </ErrorBoundary>
+        )}
+      </Route>
+      <Route path="/admin">
+        {() => (
+          <ErrorBoundary showHomeLink>
+            <AdminPanel />
+          </ErrorBoundary>
+        )}
+      </Route>
+      <Route path="/checkout">
+        {() => (
+          <ErrorBoundary showHomeLink>
+            <Checkout />
+          </ErrorBoundary>
+        )}
+      </Route>
       <Route path="/stripe-checkout" component={StripeCheckout} />
       <Route path="/checkout-success" component={CheckoutSuccess} />
       <Route path="/error-info" component={ErrorInfo} />
@@ -44,7 +74,29 @@ function App() {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000);
-    return () => clearTimeout(timer);
+    
+    // Handle global errors
+    const handleGlobalError = (event: ErrorEvent) => {
+      console.error('Global error:', event.error);
+      
+      // Store error in session storage for ErrorInfo page
+      if (event.error && event.error.message) {
+        sessionStorage.setItem('jawastock_error', event.error.message);
+        
+        // Redirect to error page only if not already there
+        if (!window.location.pathname.includes('/error-info')) {
+          window.location.href = '/error-info';
+        }
+      }
+    };
+    
+    // Add global error handler
+    window.addEventListener('error', handleGlobalError);
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('error', handleGlobalError);
+    };
   }, []);
 
   if (isLoading) {
