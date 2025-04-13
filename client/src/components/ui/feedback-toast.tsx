@@ -1,6 +1,7 @@
-import { useToast } from "@/hooks/use-toast";
+import { toast as baseToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { CheckCircle, AlertCircle, XCircle, Info } from "lucide-react";
+import React from "react";
 
 interface FeedbackToastProps {
   title: string;
@@ -14,15 +15,13 @@ interface FeedbackToastProps {
 }
 
 // Individual toast component with icons
-const FeedbackToast = ({
+const FeedbackToast: React.FC<FeedbackToastProps> = ({
   title,
   message,
   variant = "default",
   action,
   duration = 5000,
-}: FeedbackToastProps) => {
-  const { toast } = useToast();
-
+}) => {
   const getIcon = () => {
     switch (variant) {
       case "success":
@@ -49,64 +48,58 @@ const FeedbackToast = ({
   );
 };
 
-// Toast utility methods
-export const toast = {
-  success: ({ title, message, action, duration }: FeedbackToastProps) => {
-    const { toast: showToast } = useToast();
-    return showToast({
-      title: title,
-      description: message,
-      duration: duration || 5000,
-      action: action ? (
-        <ToastAction altText={action.label} onClick={action.onClick}>
-          {action.label}
-        </ToastAction>
-      ) : undefined,
-    });
-  },
-  
-  error: ({ title, message, action, duration }: FeedbackToastProps) => {
-    const { toast: showToast } = useToast();
-    return showToast({
-      title: title,
-      description: message,
-      variant: "destructive",
-      duration: duration || 8000,
-      action: action ? (
-        <ToastAction altText={action.label} onClick={action.onClick}>
-          {action.label}
-        </ToastAction>
-      ) : undefined,
-    });
-  },
-  
-  info: ({ title, message, action, duration }: FeedbackToastProps) => {
-    const { toast: showToast } = useToast();
-    return showToast({
-      title: title,
-      description: message,
-      duration: duration || 5000,
-      action: action ? (
-        <ToastAction altText={action.label} onClick={action.onClick}>
-          {action.label}
-        </ToastAction>
-      ) : undefined,
-    });
-  },
-  
-  warning: ({ title, message, action, duration }: FeedbackToastProps) => {
-    const { toast: showToast } = useToast();
-    return showToast({
-      title: title,
-      description: message,
-      duration: duration || 7000,
-      action: action ? (
-        <ToastAction altText={action.label} onClick={action.onClick}>
-          {action.label}
-        </ToastAction>
-      ) : undefined,
-    });
-  },
+// Create helper functions instead of a toast object
+export const showSuccessToast = ({ title, message, action, duration }: FeedbackToastProps) => {
+  return baseToast({
+    title: title,
+    description: message,
+    duration: duration || 5000,
+    action: action ? (
+      <ToastAction altText={action.label} onClick={action.onClick}>
+        {action.label}
+      </ToastAction>
+    ) : undefined,
+  });
+};
+
+export const showErrorToast = ({ title, message, action, duration }: FeedbackToastProps) => {
+  return baseToast({
+    title: title,
+    description: message,
+    variant: "destructive",
+    duration: duration || 8000,
+    action: action ? (
+      <ToastAction altText={action.label} onClick={action.onClick}>
+        {action.label}
+      </ToastAction>
+    ) : undefined,
+  });
+};
+
+export const showInfoToast = ({ title, message, action, duration }: FeedbackToastProps) => {
+  return baseToast({
+    title: title,
+    description: message,
+    duration: duration || 5000,
+    action: action ? (
+      <ToastAction altText={action.label} onClick={action.onClick}>
+        {action.label}
+      </ToastAction>
+    ) : undefined,
+  });
+};
+
+export const showWarningToast = ({ title, message, action, duration }: FeedbackToastProps) => {
+  return baseToast({
+    title: title,
+    description: message,
+    duration: duration || 7000,
+    action: action ? (
+      <ToastAction altText={action.label} onClick={action.onClick}>
+        {action.label}
+      </ToastAction>
+    ) : undefined,
+  });
 };
 
 export default FeedbackToast;

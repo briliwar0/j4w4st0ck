@@ -9,7 +9,7 @@ import PopularIllustrations from "@/components/home/PopularIllustrations";
 import ContributorBanner from "@/components/home/ContributorBanner";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "@/components/ui/feedback-toast";
+import { showSuccessToast, showErrorToast, showInfoToast, showWarningToast } from "@/components/ui/feedback-toast";
 
 const Home = () => {
   const { user, isAuthenticated } = useAuth();
@@ -28,7 +28,7 @@ const Home = () => {
         setShowOnboarding(true);
         
         // Show welcome toast
-        toast.success({
+        showSuccessToast({
           title: `Welcome${user?.firstName ? `, ${user.firstName}` : ''}!`,
           message: "We'll guide you through the main features of JawaStock."
         });
@@ -38,7 +38,7 @@ const Home = () => {
   
   // Handle completion of onboarding
   const handleOnboardingComplete = () => {
-    toast.success({
+    showSuccessToast({
       title: 'Onboarding Complete',
       message: 'You can now explore JawaStock with confidence!'
     });
