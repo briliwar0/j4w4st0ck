@@ -1,22 +1,22 @@
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import NotFound from "@/pages/not-found";
-import Home from "@/pages/Home";
-import Browse from "@/pages/Browse";
-import AssetDetail from "@/pages/AssetDetail";
-import Upload from "@/pages/Upload";
-import Dashboard from "@/pages/Dashboard";
-import AdminPanel from "@/pages/AdminPanel";
-import Checkout from "@/pages/Checkout";
-import StripeCheckout from "@/pages/stripe-checkout";
-import CheckoutSuccess from "@/pages/checkout-success";
-import ErrorInfo from "@/pages/ErrorInfo";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { CartProvider } from "@/contexts/CartContext";
+import { Toaster } from "./components/ui/toaster";
+import NotFound from "./pages/not-found";
+import Home from "./pages/Home";
+import Browse from "./pages/Browse";
+import AssetDetail from "./pages/AssetDetail";
+import Upload from "./pages/Upload";
+import Dashboard from "./pages/Dashboard";
+import AdminPanel from "./pages/AdminPanel";
+import Checkout from "./pages/Checkout";
+import StripeCheckout from "./pages/stripe-checkout";
+import CheckoutSuccess from "./pages/checkout-success";
+import ErrorInfo from "./pages/ErrorInfo";
+import { AuthProvider } from "./contexts/AuthContext";
+import { CartProvider } from "./contexts/CartContext";
 import { useState, useEffect } from "react";
-import ErrorBoundary from "@/components/error/ErrorBoundary";
+import ErrorBoundary from "./components/error/ErrorBoundary";
 
 function Router() {
   return (
