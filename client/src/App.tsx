@@ -12,9 +12,11 @@ import AdminPanel from "@/pages/AdminPanel";
 import Checkout from "@/pages/Checkout";
 import StripeCheckout from "@/pages/stripe-checkout";
 import CheckoutSuccess from "@/pages/checkout-success";
+import ErrorInfo from "@/pages/ErrorInfo";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { useState, useEffect } from "react";
+import ErrorBoundary from "@/components/error/ErrorBoundary";
 
 function Router() {
   return (
@@ -28,6 +30,7 @@ function Router() {
       <Route path="/checkout" component={Checkout} />
       <Route path="/stripe-checkout" component={StripeCheckout} />
       <Route path="/checkout-success" component={CheckoutSuccess} />
+      <Route path="/error-info" component={ErrorInfo} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -59,14 +62,16 @@ function App() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <CartProvider>
-          <Router />
-          <Toaster />
-        </CartProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <CartProvider>
+            <Router />
+            <Toaster />
+          </CartProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

@@ -13,6 +13,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <title>JawaStock - Stock Photos, Videos & Digital Assets</title>
+    
+    <!-- Early error detection - load before any other scripts -->
+    <script src="/error-handler.js"></script>
+    
     <!-- Preload critical script -->
     <script>
       // Fallback content if scripts fail to load
@@ -45,19 +49,27 @@
     <script>
       window.onerror = function(message, source, lineno, colno, error) {
         console.error('Global error:', message, 'at', source, lineno, colno);
-        const errorElement = document.createElement('div');
-        errorElement.style.padding = '20px';
-        errorElement.style.margin = '20px';
-        errorElement.style.backgroundColor = '#ffeeee';
-        errorElement.style.border = '1px solid #ff0000';
-        errorElement.style.borderRadius = '4px';
-        errorElement.style.display = document.getElementById('root').childNodes.length ? 'none' : 'block';
-        errorElement.innerHTML = `
-          <h3>JawaStock is experiencing an issue:</h3>
-          <p>${message}</p>
-          <p>Please refresh the page or try again later.</p>
-        `;
-        document.body.appendChild(errorElement);
+        
+        // Store error in session storage for retrieval on error page
+        sessionStorage.setItem("jawastock_error", message);
+        
+        // Only redirect if not already on the error page
+        if (!window.location.pathname.includes('/error-info')) {
+          // Check if React app is loaded (root has children)
+          const rootElement = document.getElementById('root');
+          if (!rootElement || !rootElement.childNodes.length) {
+            // React app hasn't loaded properly
+            window.location.href = '/error-info?message=' + encodeURIComponent(message);
+            return true;
+          }
+          
+          // If React is loaded, only redirect for critical errors
+          if (message.includes('undefined') || message.includes('null') || message.includes('error')) {
+            window.location.href = '/error-info?message=' + encodeURIComponent(message);
+            return true;
+          }
+        }
+        
         return true;
       };
     </script>

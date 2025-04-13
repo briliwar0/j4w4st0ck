@@ -11,7 +11,13 @@ const __dirname = path.dirname(__filename);
 console.log('Running post-build script for Netlify...');
 
 // Pastikan file _redirects ada di direktori publish
-const redirectsContent = '/*    /index.html   200';
+const redirectsContent = `
+# Redirect all routes to index.html for SPA
+/*    /index.html   200
+
+# Special handling for error paths
+/error-info    /index.html   200
+`;
 const redirectsPath = path.join(__dirname, 'dist', 'public', '_redirects');
 
 // Tulis file _redirects
@@ -88,6 +94,20 @@ if (fs.existsSync(dbMigrateSrc)) {
     console.log('Successfully copied and updated db-migrate.js');
   } catch (e) {
     console.error('Error copying db-migrate.js:', e);
+  }
+}
+
+// Pastikan file error-handler.js disalin ke direktori public
+const errorHandlerSrc = path.join(__dirname, 'public', 'error-handler.js');
+const errorHandlerDest = path.join(__dirname, 'dist', 'public', 'error-handler.js');
+if (fs.existsSync(errorHandlerSrc)) {
+  console.log('Copying error-handler.js to public directory...');
+  try {
+    const content = fs.readFileSync(errorHandlerSrc, 'utf8');
+    fs.writeFileSync(errorHandlerDest, content);
+    console.log('Successfully copied error-handler.js');
+  } catch (e) {
+    console.error('Error copying error-handler.js:', e);
   }
 }
 
