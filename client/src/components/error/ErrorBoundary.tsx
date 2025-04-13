@@ -83,9 +83,9 @@ class ErrorBoundary extends Component<Props, State> {
         <div className="p-4">
           <InteractiveErrorVisual 
             error={this.state.error || new Error('Unknown error occurred')}
+            errorInfo={this.state.errorInfo || undefined}
             componentStack={this.state.errorInfo?.componentStack}
-            resetErrorBoundary={this.reset}
-            showHomeLink={this.props.showHomeLink}
+            onReset={this.reset}
           />
         </div>
       );

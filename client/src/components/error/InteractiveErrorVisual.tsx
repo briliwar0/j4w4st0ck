@@ -14,6 +14,14 @@ interface InteractiveErrorVisualProps {
   onReset?: () => void;
 }
 
+interface ErrorAnalysis {
+  progress: number;
+  status: string;
+  complete: boolean;
+  possibleCauses: string[];
+  recommendedActions: string[];
+}
+
 export function InteractiveErrorVisual({
   error,
   errorInfo,
@@ -22,12 +30,12 @@ export function InteractiveErrorVisual({
   componentStack,
   onReset,
 }: InteractiveErrorVisualProps) {
-  const [analysis, setAnalysis] = useState({
+  const [analysis, setAnalysis] = useState<ErrorAnalysis>({
     progress: 0,
     status: 'Analyzing error...',
     complete: false,
-    possibleCauses: [] as string[],
-    recommendedActions: [] as string[],
+    possibleCauses: [],
+    recommendedActions: [],
   });
   const [activeTab, setActiveTab] = useState('visual');
 
@@ -52,8 +60,8 @@ export function InteractiveErrorVisual({
         clearInterval(timer);
         
         // Simulate error analysis results based on the error message
-        const possibleCauses = [];
-        const recommendedActions = [];
+        const possibleCauses: string[] = [];
+        const recommendedActions: string[] = [];
         
         // Common JavaScript errors and React component analysis
         if (message.includes('undefined') || message.includes('null')) {
