@@ -524,15 +524,18 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-// Initialize database with admin user
+// Initialize database with admin user, contributor, and sample assets
 const initializeDatabase = async () => {
   const storage = new DatabaseStorage();
   
   // Check if admin exists
   const admin = await storage.getUserByEmail("admin@jawastock.com");
   
+  let adminId = 0;
+  let contributorId = 0;
+  
   if (!admin) {
-    await storage.createUser({
+    const adminUser = await storage.createUser({
       username: "admin",
       email: "admin@jawastock.com",
       password: "adminpassword", // In a real app, this would be hashed
@@ -541,6 +544,168 @@ const initializeDatabase = async () => {
       lastName: "User",
     });
     console.log("Admin user created in database");
+    adminId = adminUser.id;
+    
+    // Create a contributor user
+    const contributor = await storage.createUser({
+      username: "contributor",
+      email: "contributor@jawastock.com",
+      password: "password", // In a real app, this would be hashed
+      role: "contributor",
+      firstName: "Sample",
+      lastName: "Contributor",
+    });
+    console.log("Contributor user created in database");
+    contributorId = contributor.id;
+    
+    // Add sample assets
+    const sampleAssets = [
+      {
+        title: "Beautiful Mountain Landscape",
+        description: "A stunning view of mountains at sunset",
+        type: "photo",
+        url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3",
+        thumbnailUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=400",
+        originalUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3",
+        price: 1500,
+        authorId: contributorId,
+        publicId: "jawastock/mountains",
+        originalPublicId: "jawastock/originals/mountains",
+        status: "approved",
+        width: 1920,
+        height: 1080,
+        fileSize: 2540000,
+        format: "jpg",
+        categories: ["nature", "landscape"],
+        keywords: ["mountain", "sunset", "landscape", "nature"],
+        licenseType: "standard"
+      },
+      {
+        title: "Modern workspace with notebook",
+        description: "A clean, minimalist workspace featuring a notebook and coffee",
+        type: "photo",
+        url: "https://images.unsplash.com/photo-1534351590666-13e3e96b5017",
+        thumbnailUrl: "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800&h=600",
+        price: 999,
+        authorId: contributorId,
+        publicId: "jawastock/workspace",
+        originalPublicId: "jawastock/originals/workspace",
+        status: "approved",
+        width: 1920,
+        height: 1080,
+        fileSize: 2000000,
+        format: "jpg",
+        categories: ["business", "lifestyle"],
+        keywords: ["workspace", "notebook", "minimal", "desk"],
+        licenseType: "standard"
+      },
+      {
+        title: "Business people shaking hands",
+        description: "Professional business meeting with handshake, partnership concept",
+        type: "photo",
+        url: "https://images.unsplash.com/photo-1521791136064-7986c2920216",
+        thumbnailUrl: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&h=600",
+        price: 1299,
+        authorId: contributorId,
+        publicId: "jawastock/handshake",
+        originalPublicId: "jawastock/originals/handshake",
+        status: "approved",
+        width: 1920,
+        height: 1080,
+        fileSize: 2200000,
+        format: "jpg",
+        categories: ["business", "people"],
+        keywords: ["business", "handshake", "meeting", "professional"],
+        licenseType: "standard"
+      },
+      {
+        title: "Abstract pattern background",
+        description: "Colorful abstract pattern for backgrounds and designs",
+        type: "vector",
+        url: "https://images.unsplash.com/photo-1493612276216-ee3925520721",
+        thumbnailUrl: "https://images.unsplash.com/photo-1493612276216-ee3925520721?w=800&h=600",
+        price: 799,
+        authorId: contributorId,
+        publicId: "jawastock/abstract",
+        originalPublicId: "jawastock/originals/abstract",
+        status: "approved",
+        width: 5000,
+        height: 5000,
+        fileSize: 1500000,
+        format: "svg",
+        categories: ["backgrounds", "patterns"],
+        keywords: ["abstract", "pattern", "colorful", "background"],
+        licenseType: "standard"
+      }
+    ];
+    
+    for (const asset of sampleAssets) {
+      await storage.createAsset(asset);
+    }
+    
+    console.log("Sample assets created in database");
+  } else {
+    adminId = admin.id;
+    
+    // Check if contributor exists
+    const contributor = await storage.getUserByEmail("contributor@jawastock.com");
+    if (contributor) {
+      contributorId = contributor.id;
+    }
+    
+    // Check if assets exists
+    const assets = await storage.getApprovedAssets();
+    if (assets.length === 0) {
+      console.log("No assets found. Creating sample assets.");
+      // Add sample assets if none exist
+      const sampleAssets = [
+        {
+          title: "Beautiful Mountain Landscape",
+          description: "A stunning view of mountains at sunset",
+          type: "photo",
+          url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3",
+          thumbnailUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=400",
+          originalUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3",
+          price: 1500,
+          authorId: contributorId || adminId,
+          publicId: "jawastock/mountains",
+          originalPublicId: "jawastock/originals/mountains",
+          status: "approved",
+          width: 1920,
+          height: 1080,
+          fileSize: 2540000,
+          format: "jpg",
+          categories: ["nature", "landscape"],
+          keywords: ["mountain", "sunset", "landscape", "nature"],
+          licenseType: "standard"
+        },
+        {
+          title: "Modern workspace with notebook",
+          description: "A clean, minimalist workspace featuring a notebook and coffee",
+          type: "photo",
+          url: "https://images.unsplash.com/photo-1534351590666-13e3e96b5017",
+          thumbnailUrl: "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800&h=600",
+          price: 999,
+          authorId: contributorId || adminId,
+          publicId: "jawastock/workspace",
+          originalPublicId: "jawastock/originals/workspace",
+          status: "approved",
+          width: 1920,
+          height: 1080,
+          fileSize: 2000000,
+          format: "jpg",
+          categories: ["business", "lifestyle"],
+          keywords: ["workspace", "notebook", "minimal", "desk"],
+          licenseType: "standard"
+        }
+      ];
+      
+      for (const asset of sampleAssets) {
+        await storage.createAsset(asset);
+      }
+      
+      console.log("Sample assets created in database");
+    }
   }
   
   return storage;
