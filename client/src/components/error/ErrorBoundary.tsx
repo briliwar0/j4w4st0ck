@@ -1,6 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode, Suspense } from 'react';
 import { InteractiveErrorVisual } from './InteractiveErrorVisual';
-import { BrandedSpinner } from '@/components/ui/branded-spinner';
+import { BrandedSpinner } from '../../components/ui/branded-spinner';
 
 interface Props {
   children: ReactNode;
