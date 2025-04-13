@@ -1,5 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode, Suspense } from 'react';
-import InteractiveErrorVisual from './InteractiveErrorVisual';
+import { InteractiveErrorVisual } from './InteractiveErrorVisual';
 import { BrandedSpinner } from '@/components/ui/branded-spinner';
 
 interface Props {

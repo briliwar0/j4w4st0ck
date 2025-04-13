@@ -1,73 +1,106 @@
-import { Helmet } from "react-helmet";
-import { useEffect, useState } from "react";
-import InteractiveErrorVisual from "@/components/error/InteractiveErrorVisual";
-import { toast } from "@/components/ui/feedback-toast";
+import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { Link } from 'wouter';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import { InteractiveErrorVisual } from '@/components/error/InteractiveErrorVisual';
+import { Button } from '@/components/ui/button';
+import { Home, RefreshCw } from 'lucide-react';
 
-export default function ErrorInfo() {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [errorCode, setErrorCode] = useState<number>(500);
-  
+const ErrorInfo = () => {
+  const [errorDetails, setErrorDetails] = useState({
+    message: '',
+    stack: '',
+    timestamp: new Date().toISOString(),
+  });
+
   useEffect(() => {
-    // Get error from URL params
-    const params = new URLSearchParams(window.location.search);
-    const error = params.get("message");
-    const code = params.get("code");
+    // Get error info from session storage if available
+    const errorMessage = sessionStorage.getItem('jawastock_error');
+    const errorStack = sessionStorage.getItem('jawastock_error_stack');
     
-    if (code) {
-      try {
-        setErrorCode(parseInt(code));
-      } catch {
-        setErrorCode(500);
-      }
+    if (errorMessage) {
+      setErrorDetails(prev => ({
+        ...prev,
+        message: errorMessage,
+        stack: errorStack || '',
+      }));
+      
+      // Clear from session storage to prevent showing on page refresh
+      // sessionStorage.removeItem('jawastock_error');
+      // sessionStorage.removeItem('jawastock_error_stack');
+    } else {
+      // If no specific error info, use a generic message
+      setErrorDetails(prev => ({
+        ...prev,
+        message: 'An unexpected error occurred while loading the application',
+      }));
     }
-    
-    setErrorMessage(error || "An unknown error occurred");
-    
-    // Clear the error from session storage once displayed
-    const storedError = sessionStorage.getItem("jawastock_error");
-    if (storedError) {
-      setErrorMessage(storedError);
-      sessionStorage.removeItem("jawastock_error");
-    }
-    
-    // Show toast notification
-    toast.warning({
-      title: "Error Detected",
-      message: "We've detected an issue with the application and are showing you detailed information."
-    });
   }, []);
-
-  const createErrorObject = (): Error => {
-    const error = new Error(errorMessage || "Unknown error");
-    return error;
+  
+  const handleReset = () => {
+    // Clear errors from session storage
+    sessionStorage.removeItem('jawastock_error');
+    sessionStorage.removeItem('jawastock_error_stack');
+    
+    // Redirect to home
+    window.location.href = '/';
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50 p-4">
+    <>
       <Helmet>
         <title>Error Information | JawaStock</title>
-      </Helmet>
-      
-      <div className="w-full max-w-3xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">JawaStock Error Center</h1>
-          <p className="text-gray-600">
-            We've encountered an issue, but we're here to help you resolve it.
-          </p>
-        </div>
-        
-        <InteractiveErrorVisual 
-          error={createErrorObject()} 
-          errorCode={errorCode}
-          showHomeLink={true}
-          resetErrorBoundary={() => window.location.reload()}
+        <meta
+          name="description"
+          content="Error information and troubleshooting for JawaStock"
         />
-        
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <p>If this issue persists, please contact our support team.</p>
-          <p className="mt-2">Error Reference: {Date.now().toString(36).toUpperCase()}</p>
-        </div>
+      </Helmet>
+
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow py-12 bg-slate-50">
+          <div className="container max-w-7xl mx-auto px-4">
+            <div className="flex flex-col items-center justify-center mb-8">
+              <div className="w-full max-w-4xl">
+                <div className="flex justify-between items-center mb-8">
+                  <h1 className="text-3xl font-bold">Error Information</h1>
+                  <div className="space-x-2">
+                    <Button variant="outline" asChild>
+                      <Link href="/">
+                        <Home className="mr-2 h-4 w-4" />
+                        Home
+                      </Link>
+                    </Button>
+                    <Button onClick={handleReset}>
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      Reset
+                    </Button>
+                  </div>
+                </div>
+
+                <InteractiveErrorVisual 
+                  errorMessage={errorDetails.message}
+                  errorStack={errorDetails.stack}
+                  onReset={handleReset}
+                />
+                
+                <div className="mt-12 text-center">
+                  <p className="text-muted-foreground mb-4">
+                    Need additional help? Contact our support team.
+                  </p>
+                  <Button asChild variant="outline">
+                    <a href="mailto:support@jawastock.com">Contact Support</a>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <Footer />
       </div>
-    </div>
+    </>
   );
-}
+};
+
+export default ErrorInfo;

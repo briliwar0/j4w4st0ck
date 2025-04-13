@@ -26,7 +26,7 @@ function Router() {
       <Route path="/assets/:id">
         {(params) => (
           <ErrorBoundary showHomeLink>
-            <AssetDetail id={params.id} />
+            <AssetDetail />
           </ErrorBoundary>
         )}
       </Route>

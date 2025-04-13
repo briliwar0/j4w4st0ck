@@ -1,136 +1,112 @@
-import React from "react";
-import { toast as showToast } from "@/hooks/use-toast";
-import { CheckCircle2, AlertCircle, InfoIcon, XCircle, Bell } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { cva, type VariantProps } from "class-variance-authority";
-
-const feedbackVariants = cva(
-  "group relative w-full rounded-lg border p-4 pr-10 shadow-lg",
-  {
-    variants: {
-      variant: {
-        default: "bg-white border-gray-200",
-        success: "bg-green-50 border-green-200 text-green-900",
-        error: "bg-red-50 border-red-200 text-red-900",
-        warning: "bg-amber-50 border-amber-200 text-amber-900",
-        info: "bg-blue-50 border-blue-200 text-blue-900", 
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  }
-);
-
-const iconVariants = cva("h-5 w-5", {
-  variants: {
-    variant: {
-      default: "text-gray-500",
-      success: "text-green-500",
-      error: "text-red-500",
-      warning: "text-amber-500",
-      info: "text-blue-500", 
-    },
-  },
-  defaultVariants: {
-    variant: "default",
-  },
-});
-
-const titleVariants = cva("font-medium text-sm mb-1", {
-  variants: {
-    variant: {
-      default: "text-gray-900",
-      success: "text-green-900",
-      error: "text-red-900",
-      warning: "text-amber-900",
-      info: "text-blue-900", 
-    },
-  },
-  defaultVariants: {
-    variant: "default",
-  },
-});
-
-const messageVariants = cva("text-sm", {
-  variants: {
-    variant: {
-      default: "text-gray-600",
-      success: "text-green-700",
-      error: "text-red-700",
-      warning: "text-amber-700",
-      info: "text-blue-700", 
-    },
-  },
-  defaultVariants: {
-    variant: "default",
-  },
-});
-
-export type FeedbackVariant = "default" | "success" | "error" | "warning" | "info";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { CheckCircle, AlertCircle, XCircle, Info } from "lucide-react";
 
 interface FeedbackToastProps {
   title: string;
   message: string;
-  variant?: FeedbackVariant;
+  variant?: "default" | "success" | "error" | "warning" | "info";
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
   duration?: number;
-  action?: React.ReactNode;
 }
 
-// Ekspor fungsi toast yang dapat digunakan di seluruh aplikasi
-export function feedbackToast({
+// Individual toast component with icons
+const FeedbackToast = ({
   title,
   message,
   variant = "default",
-  duration = 5000,
   action,
-}: FeedbackToastProps) {
-  return showToast({
-    title: title,
-    description: (
-      <div className="flex w-full flex-col space-y-1">
-        <span className={cn(messageVariants({ variant }), "flex items-center gap-2")}>
-          {getIcon(variant)}
-          {message}
-        </span>
-        {action && <div className="mt-2">{action}</div>}
+  duration = 5000,
+}: FeedbackToastProps) => {
+  const { toast } = useToast();
+
+  const getIcon = () => {
+    switch (variant) {
+      case "success":
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
+      case "error":
+        return <XCircle className="h-5 w-5 text-red-500" />;
+      case "warning":
+        return <AlertCircle className="h-5 w-5 text-amber-500" />;
+      case "info":
+        return <Info className="h-5 w-5 text-blue-500" />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="flex items-start gap-3">
+      {getIcon()}
+      <div className="flex-1">
+        <div className="font-semibold">{title}</div>
+        <div className="text-sm text-muted-foreground">{message}</div>
       </div>
-    ),
-    duration: duration,
-    className: cn(feedbackVariants({ variant })),
-  });
-}
-
-// Helper untuk mendapatkan icon berdasarkan variant
-function getIcon(variant: FeedbackVariant) {
-  switch (variant) {
-    case "success":
-      return <CheckCircle2 className={cn(iconVariants({ variant }))} />;
-    case "error":
-      return <XCircle className={cn(iconVariants({ variant }))} />;
-    case "warning":
-      return <AlertCircle className={cn(iconVariants({ variant }))} />;
-    case "info":
-      return <InfoIcon className={cn(iconVariants({ variant }))} />;
-    default:
-      return <Bell className={cn(iconVariants({ variant }))} />;
-  }
-}
-
-// Ekspor fungsi utility untuk berbagai jenis toast
-export const toast = {
-  success: (props: Omit<FeedbackToastProps, "variant">) =>
-    feedbackToast({ ...props, variant: "success" }),
-  
-  error: (props: Omit<FeedbackToastProps, "variant">) =>
-    feedbackToast({ ...props, variant: "error" }),
-  
-  warning: (props: Omit<FeedbackToastProps, "variant">) =>
-    feedbackToast({ ...props, variant: "warning" }),
-  
-  info: (props: Omit<FeedbackToastProps, "variant">) =>
-    feedbackToast({ ...props, variant: "info" }),
-  
-  default: (props: Omit<FeedbackToastProps, "variant">) =>
-    feedbackToast({ ...props, variant: "default" }),
+    </div>
+  );
 };
+
+// Toast utility methods
+export const toast = {
+  success: ({ title, message, action, duration }: FeedbackToastProps) => {
+    const { toast: showToast } = useToast();
+    return showToast({
+      title: title,
+      description: message,
+      duration: duration || 5000,
+      action: action ? (
+        <ToastAction altText={action.label} onClick={action.onClick}>
+          {action.label}
+        </ToastAction>
+      ) : undefined,
+    });
+  },
+  
+  error: ({ title, message, action, duration }: FeedbackToastProps) => {
+    const { toast: showToast } = useToast();
+    return showToast({
+      title: title,
+      description: message,
+      variant: "destructive",
+      duration: duration || 8000,
+      action: action ? (
+        <ToastAction altText={action.label} onClick={action.onClick}>
+          {action.label}
+        </ToastAction>
+      ) : undefined,
+    });
+  },
+  
+  info: ({ title, message, action, duration }: FeedbackToastProps) => {
+    const { toast: showToast } = useToast();
+    return showToast({
+      title: title,
+      description: message,
+      duration: duration || 5000,
+      action: action ? (
+        <ToastAction altText={action.label} onClick={action.onClick}>
+          {action.label}
+        </ToastAction>
+      ) : undefined,
+    });
+  },
+  
+  warning: ({ title, message, action, duration }: FeedbackToastProps) => {
+    const { toast: showToast } = useToast();
+    return showToast({
+      title: title,
+      description: message,
+      duration: duration || 7000,
+      action: action ? (
+        <ToastAction altText={action.label} onClick={action.onClick}>
+          {action.label}
+        </ToastAction>
+      ) : undefined,
+    });
+  },
+};
+
+export default FeedbackToast;
