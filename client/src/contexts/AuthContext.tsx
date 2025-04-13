@@ -36,13 +36,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check if user is logged in on mount
+  // Check if user is logged in on mount and set up interval check
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
         setIsLoading(true);
         const response = await fetch("/api/auth/me", {
           credentials: "include",
+          cache: "no-cache" // Prevent caching of auth requests
         });
 
         if (response.ok) {
@@ -61,7 +62,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     };
 
+    // Initial check
     checkAuthStatus();
+
+    // Periodic check every 60 seconds to ensure session is maintained
+    const intervalId = setInterval(checkAuthStatus, 60000);
+
+    // Clean up interval on unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   const login = async (email: string, password: string): Promise<User> => {
