@@ -128,7 +128,7 @@ const Navbar = () => {
                 className="text-neutral-600 hover:text-primary relative"
               >
                 <ShoppingCart />
-                {cartItems && cartItems.length > 0 && (
+                {Array.isArray(cartItems) && cartItems.length > 0 && (
                   <Badge
                     variant="destructive"
                     className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0"
@@ -201,7 +201,7 @@ const Navbar = () => {
                             href="/checkout"
                             className="font-medium text-neutral-600 hover:text-primary py-2 block"
                           >
-                            Cart ({cartItems.length})
+                            Cart ({Array.isArray(cartItems) ? cartItems.length : 0})
                           </Link>
                           <Button
                             variant="ghost"
@@ -235,7 +235,7 @@ const Navbar = () => {
                             href="/checkout"
                             className="font-medium text-neutral-600 hover:text-primary py-2 block"
                           >
-                            Cart ({cartItems.length})
+                            Cart ({Array.isArray(cartItems) ? cartItems.length : 0})
                           </Link>
                         </>
                       )}
